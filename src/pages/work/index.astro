@@ -14,7 +14,11 @@ const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "num
 
   <section class="entry-list" data-motion style="--stagger: 1">
     <h2>work</h2>
-    {
+    {work.length === 0 ? (
+      <p class="entry-empty">
+        Quietly rebuilding this shelf. New pieces soon — until then, you can peek at what I'm thinking about in <a href="/words">words</a>.
+      </p>
+    ) : (
       work.map((entry, i) => (
         <a
           href={`/work/${entry.id}`}
@@ -32,6 +36,6 @@ const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "num
           <span class="meta">{fmt(entry.data.date)}</span>
         </a>
       ))
-    }
+    )}
   </section>
 </BaseLayout>

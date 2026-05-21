@@ -114,6 +114,27 @@ a {
   font-variation-settings: "SOFT" 100, "opsz" 144;
 }
 
+/* === Empty state === */
+.entry-empty {
+  color: var(--secondary);
+  max-width: 44ch;
+  text-wrap: pretty;
+  line-height: 1.55;
+  padding: 0.75rem 0 0.25rem;
+}
+
+.entry-empty a {
+  color: var(--heading);
+  text-decoration: underline;
+  text-decoration-color: var(--divider);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease-out;
+}
+
+.entry-empty a:hover {
+  text-decoration-color: var(--heading);
+}
+
 /* === Entry row === */
 .entry-row {
   position: relative;

@@ -16,7 +16,11 @@ const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "num
 
   <section class="entry-list" data-motion style="--stagger: 1">
     <h2>words</h2>
-    {
+    {words.length === 0 ? (
+      <p class="entry-empty">
+        Drafts are simmering. Nothing to read yet — check back, or wander over to <a href="/work">work</a>.
+      </p>
+    ) : (
       words.map((entry, i) => (
         <a
           href={`/words/${entry.id}`}
@@ -29,6 +33,6 @@ const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "num
           <span class="meta">{fmt(entry.data.date)}</span>
         </a>
       ))
-    }
+    )}
   </section>
 </BaseLayout>
