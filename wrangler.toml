@@ -1,3 +1,8 @@
 name = "elydelva"
 compatibility_date = "2025-05-21"
 pages_build_output_dir = "./dist"
+
+# Astro Pages sert elydelva.fr (apex)
+# www.elydelva.fr → redirige vers elydelva.fr
+# Domaines custom à configurer via dashboard: Pages → elydelva → Custom domains
+# Redirect www → apex via Cloudflare Bulk Redirects ou Rules
