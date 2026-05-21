@@ -1,0 +1,98 @@
+---
+/**
+ * Wordmark logo. Uses Fraunces (variable serif) in italic with per-letter
+ * entrance: each glyph fades in + un-blurs + drifts up, staggered. Plays once
+ * per session — the wrapper uses `transition:persist` so navigating between
+ * pages does not replay it.
+ */
+interface Props {
+  text?: string;
+  ariaLabel?: string;
+}
+
+const { text = "Ely", ariaLabel } = Astro.props;
+const label = ariaLabel ?? text;
+const letters = Array.from(text);
+---
+
+<a href="/" class="signature" aria-label={label} transition:persist="signature">
+  <span class="signature-text" data-signature-text>
+    {letters.map((ch, i) => (
+      <span class="signature-letter" style={`--i:${i}`}>{ch === " " ? " " : ch}</span>
+    ))}
+  </span>
+</a>
+
+<style>
+  .signature {
+    display: inline-block;
+    color: var(--heading);
+    line-height: 1;
+    text-decoration: none;
+  }
+  .signature-text {
+    display: inline-flex;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(2.5rem, 5.5vw, 3rem);
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    font-variation-settings: "SOFT" 100, "opsz" 144;
+  }
+  .signature-letter {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(0.35em);
+    animation: sig-letter-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(0.1s + var(--i) * 0.08s);
+    will-change: opacity, filter, transform;
+  }
+  @keyframes sig-letter-in {
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+  .signature:hover {
+    color: color-mix(in srgb, var(--heading) 80%, var(--primary));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .signature-letter {
+      animation: none;
+      opacity: 1;
+      filter: none;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Mark drawn once per session — combined with transition:persist this means
+  // the animation only plays on the very first paint of the very first page.
+  const KEY = "signature-drawn-v2";
+  function settle(scope: ParentNode = document) {
+    if (!sessionStorage.getItem(KEY)) {
+      const text = scope.querySelector("[data-signature-text]");
+      if (!text) return;
+      const letters = text.querySelectorAll<HTMLElement>(".signature-letter");
+      const last = letters[letters.length - 1];
+      if (!last) return;
+      last.addEventListener("animationend", () => sessionStorage.setItem(KEY, "1"), {
+        once: true,
+      });
+      return;
+    }
+    // Already played — skip animation entirely.
+    scope.querySelectorAll<HTMLElement>(".signature-letter").forEach((el) => {
+      el.style.animation = "none";
+      el.style.opacity = "1";
+      el.style.filter = "none";
+      el.style.transform = "none";
+    });
+  }
+  settle();
+  document.addEventListener("astro:after-swap", () => settle());
+</script>

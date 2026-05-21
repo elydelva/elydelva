@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="photo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d9c2a7"/>
+      <stop offset="0.5" stop-color="#b88f6e"/>
+      <stop offset="1" stop-color="#73574a"/>
+    </linearGradient>
+    <linearGradient id="photo2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#efe1cf"/>
+      <stop offset="1" stop-color="#a98a72"/>
+    </linearGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <!-- Surface -->
+  <rect width="1200" height="630" fill="#faf6f2"/>
+
+  <!-- Faint horizon vignette to add depth without color -->
+  <rect width="1200" height="630" fill="url(#photo2)" opacity="0.06"/>
+
+  <!-- Polaroid stack, right side, tilted (echoing the home page cluster) -->
+  <g transform="translate(820 130)">
+    <!-- back card -->
+    <g transform="rotate(-9) translate(40 30)">
+      <rect x="0" y="0" width="240" height="260" fill="#000" opacity="0.18" filter="url(#soft)" transform="translate(6 14)"/>
+      <rect x="0" y="0" width="240" height="260" fill="#fff"/>
+      <rect x="14" y="14" width="212" height="160" fill="url(#photo2)"/>
+    </g>
+    <!-- middle card -->
+    <g transform="rotate(6) translate(-10 60)">
+      <rect x="0" y="0" width="260" height="280" fill="#000" opacity="0.20" filter="url(#soft)" transform="translate(8 16)"/>
+      <rect x="0" y="0" width="260" height="280" fill="#fff"/>
+      <rect x="14" y="14" width="232" height="172" fill="url(#photo)"/>
+    </g>
+    <!-- front card -->
+    <g transform="rotate(-3) translate(20 90)">
+      <rect x="0" y="0" width="280" height="300" fill="#000" opacity="0.22" filter="url(#soft)" transform="translate(10 18)"/>
+      <rect x="0" y="0" width="280" height="300" fill="#fff"/>
+      <rect x="16" y="16" width="248" height="184" fill="url(#photo)"/>
+      <text x="140" y="262" text-anchor="middle"
+        font-family="Fraunces, Georgia, 'Times New Roman', serif"
+        font-style="italic" font-size="22" fill="#73574a">design &amp; writing</text>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(96 240)">
+    <text
+      font-family="Fraunces, Georgia, 'Times New Roman', serif"
+      font-style="italic"
+      font-weight="600"
+      font-size="220"
+      letter-spacing="-6"
+      fill="#432818">Ely Delva</text>
+
+    <!-- Subtitle -->
+    <text x="6" y="92"
+      font-family="Inter, -apple-system, system-ui, sans-serif"
+      font-size="30"
+      fill="#73574a">Design and writing.</text>
+
+    <!-- Squiggle divider -->
+    <path d="M6 140 q14 -14 28 0 t28 0 t28 0 t28 0 t28 0"
+      stroke="#73574a" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+    <!-- URL -->
+    <text x="6" y="190"
+      font-family="Inter, -apple-system, system-ui, sans-serif"
+      font-size="22"
+      fill="#73574a" opacity="0.75">elydelva.dev</text>
+  </g>
+</svg>

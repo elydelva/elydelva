@@ -1,0 +1,37 @@
+---
+interface ImageItem {
+  src: string;
+  alt?: string;
+  rotate?: number;
+  x?: number;
+  y?: number;
+}
+interface Props {
+  images: ImageItem[];
+}
+
+const { images } = Astro.props;
+
+const defaults = [
+  { rotate: -9, x: -75, y: -55 },
+  { rotate: 7, x: 65, y: -45 },
+  { rotate: -5, x: -55, y: 60 },
+  { rotate: 11, x: 70, y: 70 },
+];
+
+const items = images.slice(0, 4).map((img, i) => ({
+  ...defaults[i],
+  ...img,
+}));
+---
+
+<div class="polaroid-stack">
+  {items.map((it, i) => (
+    <span
+      class="polaroid-stack__card"
+      style={`--rot:${it.rotate}deg; --tx:${it.x}px; --ty:${it.y}px; z-index:${i + 1};`}
+    >
+      <img src={it.src} alt={it.alt ?? ""} loading="lazy" decoding="async" />
+    </span>
+  ))}
+</div>

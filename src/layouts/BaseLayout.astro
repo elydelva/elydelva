@@ -1,0 +1,359 @@
+---
+import "../styles/globals.css";
+import { ClientRouter } from "astro:transitions";
+
+interface Props {
+  title: string;
+  description?: string;
+  preloadImage?: string;
+  ogImage?: string;
+}
+
+const { title, description = "Design and writing.", preloadImage, ogImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const og = new URL(ogImage ?? "/og.png", Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#faf6f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c1917" media="(prefers-color-scheme: dark)" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ely Delva" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ely Delva — design and writing." />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={og} />
+
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
+    <ClientRouter />
+
+    <script is:inline>
+      // Sync theme to avoid light↔dark flash on cold load
+      (function () {
+        var t = localStorage.getItem("theme");
+        var dark = t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+      })();
+
+      // Cold-load hover guard — prevents hover firing on first paint
+      (function () {
+        function armGuard() {
+          document.documentElement.classList.add("hover-cold");
+          var fx = -1,
+            fy = -1;
+          function disarm() {
+            document.documentElement.classList.remove("hover-cold");
+            window.removeEventListener("pointermove", onMove);
+            window.removeEventListener("pointerdown", disarm);
+          }
+          function onMove(e) {
+            if (fx < 0) {
+              fx = e.clientX;
+              fy = e.clientY;
+              return;
+            }
+            if (Math.abs(e.clientX - fx) + Math.abs(e.clientY - fy) > 12) disarm();
+          }
+          window.addEventListener("pointermove", onMove, { passive: true });
+          window.addEventListener("pointerdown", disarm, { passive: true });
+        }
+        armGuard();
+        document.addEventListener("astro:after-swap", armGuard);
+      })();
+
+      // Smooth hero morph: ONLY the polaroid (or hero) involved in the
+      // navigation gets `view-transition-name`. Naming it statically would
+      // cause every polaroid on the page to become its own VT group and bob
+      // up with vt-arc. We assign the name dynamically right before capture.
+      //
+      // Forward nav (/ → /work/slug):
+      //   - find the clicked <a> on the CURRENT page via the dest pathname
+      //   - put `view-transition-name` on its .polaroid-card so its snapshot
+      //     pairs with the destination hero (which is already named server-side)
+      //
+      // Back nav (/work/slug → /):
+      //   - source hero is already named on the current detail page
+      //   - destination polaroid lives in `event.newDocument` — inject the
+      //     matching `view-transition-name` there before swap so the pair forms
+      //
+      // Also: warm the high-res hero image, untilt the source, and flag
+      // `vt-swapped` so the entrance fade-in-blur does not double up on the
+      // morph after navigation.
+      (function () {
+        // We use a CONSTANT name "hero" for the morphing pair instead of a
+        // slug-specific one. Since at most one source and one target are named
+        // at any given navigation, there is never a collision — provided we
+        // *clear* the name on whichever polaroid carried it last. Two elements
+        // with the same view-transition-name in one document = uniqueness
+        // violation → the browser skips the group entirely (= no morph).
+        function isDetail(pathname) {
+          return /^\/(work|words)\/[^\/]+\/?$/.test(pathname || "");
+        }
+        function isCollectionIndex(pathname) {
+          return /^\/(work|words)\/?$/.test(pathname || "");
+        }
+        function isHome(pathname) {
+          return /^\/?$/.test(pathname || "");
+        }
+        function normalizePath(p) {
+          if (!p) return "/";
+          return p.length > 1 && p.endsWith("/") ? p.slice(0, -1) : p;
+        }
+        function clearAllHeroNames(scope) {
+          scope.querySelectorAll(".polaroid-card").forEach(function (el) {
+            el.style.viewTransitionName = "";
+          });
+        }
+        function clearAllMoreNames(scope) {
+          scope.querySelectorAll(".entry-list").forEach(function (el) {
+            if (el.style.viewTransitionName === "more-section") {
+              el.style.viewTransitionName = "";
+            }
+          });
+        }
+        function findMoreSectionInScope(scope, collectionPath) {
+          // The .entry-list that contains the "More" <a> pointing at the collection index
+          var p = normalizePath(collectionPath);
+          var candidates = scope.querySelectorAll(".entry-list");
+          for (var i = 0; i < candidates.length; i++) {
+            if (candidates[i].querySelector(
+              'a.entry-row[href="' + p + '"], a.entry-row[href="' + p + '/"]',
+            )) {
+              return candidates[i];
+            }
+          }
+          return null;
+        }
+        // Forward nav: clear any stale name, then mark the clicked source.
+        function onBeforePrep(e) {
+          if (!e) return;
+          var toPath = e.to && e.to.pathname;
+          var fromPath = e.from && e.from.pathname;
+
+          // Always clear stale names so groups don't double up.
+          clearAllHeroNames(document);
+          clearAllMoreNames(document);
+
+          // Hero morph: home/list → detail
+          if (isDetail(toPath)) {
+            var link = document.querySelector('a.entry-row[href="' + toPath + '"]');
+            if (!link) return;
+            var main = link.querySelector(".polaroid-card");
+            if (!main) return;
+            main.style.viewTransitionName = "hero";
+            main.style.transition = "none";
+            main.style.transform = "rotate(0deg) scale(1)";
+            void main.offsetHeight;
+            return;
+          }
+
+          // More-section morph
+          // Forward: home → /work or /words
+          if (isHome(fromPath) && isCollectionIndex(toPath)) {
+            var section = findMoreSectionInScope(document, toPath);
+            if (section) section.style.viewTransitionName = "more-section";
+            return;
+          }
+          // Backward: /work or /words → home
+          if (isCollectionIndex(fromPath) && isHome(toPath)) {
+            var srcSection = document.querySelector(".entry-list");
+            if (srcSection) srcSection.style.viewTransitionName = "more-section";
+            return;
+          }
+        }
+        // Backward / forward nav: clear any stale names in newDocument, then
+        // mark the matching element on the destination page.
+        function onBeforeSwap(e) {
+          if (!e || !e.newDocument) return;
+          var toPath = e.to && e.to.pathname;
+          var fromPath = e.from && e.from.pathname;
+
+          clearAllHeroNames(e.newDocument);
+          clearAllMoreNames(e.newDocument);
+
+          // Hero: backward detail → list/home. Mark the polaroid that pairs.
+          if (isDetail(fromPath)) {
+            var nextLink = e.newDocument.querySelector(
+              'a.entry-row[href="' + fromPath + '"]',
+            );
+            if (nextLink) {
+              var nextMain = nextLink.querySelector(".polaroid-card");
+              if (nextMain) {
+                var existing = nextMain.getAttribute("style") || "";
+                nextMain.setAttribute(
+                  "style",
+                  existing + "; view-transition-name: hero;",
+                );
+              }
+            }
+            return;
+          }
+
+          // More-section forward: home → collection index. Mark the (only)
+          // .entry-list on the destination page.
+          if (isHome(fromPath) && isCollectionIndex(toPath)) {
+            var destSection = e.newDocument.querySelector(".entry-list");
+            if (destSection) {
+              var es = destSection.getAttribute("style") || "";
+              destSection.setAttribute(
+                "style",
+                es + "; view-transition-name: more-section;",
+              );
+            }
+            return;
+          }
+
+          // More-section backward: collection index → home. Mark the
+          // .entry-list on the home page that contains the corresponding
+          // More link.
+          if (isCollectionIndex(fromPath) && isHome(toPath)) {
+            var destHomeSection = findMoreSectionInScope(e.newDocument, fromPath);
+            if (destHomeSection) {
+              var es2 = destHomeSection.getAttribute("style") || "";
+              destHomeSection.setAttribute(
+                "style",
+                es2 + "; view-transition-name: more-section;",
+              );
+            }
+            return;
+          }
+        }
+        function onAfterSwap() {
+          document.documentElement.classList.add("vt-swapped");
+        }
+        document.addEventListener("astro:before-preparation", onBeforePrep);
+        document.addEventListener("astro:before-swap", onBeforeSwap);
+        document.addEventListener("astro:after-swap", onAfterSwap);
+
+        // Warm the hero-resolution image as soon as the user shows intent
+        // (hover or focus). By the time they click, the bytes are in cache and
+        // the new <img> on the detail page renders instantly — no flash.
+        function preloadHero(row) {
+          if (row.dataset.heroWarmed) return;
+          var main = row.querySelector(".polaroid-card");
+          if (!main) return;
+          var src = main.getAttribute("src") || "";
+          var hi = src.replace("w=240&h=160", "w=1000&h=600").replace("q=80", "q=72");
+          if (hi === src) return;
+          var pre = new Image();
+          pre.decoding = "async";
+          pre.src = hi;
+          row.dataset.heroWarmed = "1";
+        }
+        function wirePreload() {
+          document.querySelectorAll("a.entry-row").forEach(function (row) {
+            var warm = function () {
+              preloadHero(row);
+            };
+            row.addEventListener("mouseenter", warm);
+            row.addEventListener("focus", warm);
+            row.addEventListener("pointerdown", warm, { passive: true });
+            row.addEventListener("touchstart", warm, { passive: true });
+          });
+        }
+        wirePreload();
+        document.addEventListener("astro:page-load", wirePreload);
+
+        // Remember last list page (/, /work, /words) so detail "← Back"
+        // returns to the page the user came from instead of always /.
+        function rememberList() {
+          var p = location.pathname;
+          if (isHome(p) || isCollectionIndex(p)) {
+            sessionStorage.setItem("lastList", normalizePath(p) || "/");
+          }
+        }
+        function wireBack() {
+          document.querySelectorAll("a[data-back]").forEach(function (a) {
+            if (a.dataset.backWired) return;
+            a.dataset.backWired = "1";
+            a.addEventListener("pointerdown", function () {
+              var last = sessionStorage.getItem("lastList") || "/";
+              a.setAttribute("href", last);
+            });
+            a.addEventListener("focus", function () {
+              var last = sessionStorage.getItem("lastList") || "/";
+              a.setAttribute("href", last);
+            });
+          });
+        }
+        rememberList();
+        wireBack();
+        document.addEventListener("astro:page-load", function () {
+          rememberList();
+          wireBack();
+        });
+      })();
+
+      // Scroll-driven reveal for detail pages.
+      // After a 1s gate, IntersectionObserver reveals each [data-reveal]
+      // element when it enters the viewport. Above-fold items reveal at 1s,
+      // below-fold items reveal as the user scrolls down.
+      (function () {
+        var REVEAL_DELAY_MS = 500;
+        function setupReveal() {
+          // Mark each direct child of .entry-body as reveal-eligible so
+          // MDX content blocks (paragraphs, figures, dividers) fade in
+          // individually as they enter the viewport.
+          var els = document.querySelectorAll(
+            "[data-reveal]:not(.revealed), .entry-body > *:not(.revealed)"
+          );
+          if (!els.length) return;
+          setTimeout(function () {
+            if (!("IntersectionObserver" in window)) {
+              els.forEach(function (el) { el.classList.add("revealed"); });
+              return;
+            }
+            var STAGGER_MS = 90;
+            var io = new IntersectionObserver(function (entries, obs) {
+              // Sort by document order so the cascade reads top-to-bottom.
+              var hits = entries
+                .filter(function (e) { return e.isIntersecting; })
+                .map(function (e) { return e.target; })
+                .sort(function (a, b) {
+                  var pos = a.compareDocumentPosition(b);
+                  if (pos & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+                  if (pos & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+                  return 0;
+                });
+              hits.forEach(function (el, i) {
+                el.style.transitionDelay = (i * STAGGER_MS) + "ms";
+                el.classList.add("revealed");
+                obs.unobserve(el);
+              });
+            }, { threshold: 0.1, rootMargin: "0px 0px -10% 0px" });
+            els.forEach(function (el) { io.observe(el); });
+          }, REVEAL_DELAY_MS);
+        }
+        setupReveal();
+        document.addEventListener("astro:page-load", setupReveal);
+      })();
+    </script>
+  </head>
+  <body>
+    <main class="page">
+      <slot />
+    </main>
+  </body>
+</html>

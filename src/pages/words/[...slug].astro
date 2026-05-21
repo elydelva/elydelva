@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Year from "../../components/blocks/Year.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("words");
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const heroSrc =
+  entry.data.heroImage ??
+  entry.data.image.replace("w=240&h=160", "w=1000&h=600").replace("q=80", "q=72");
+---
+
+<BaseLayout
+  title={`${entry.data.title} — Ely Delva`}
+  description={entry.data.description}
+  preloadImage={heroSrc}
+>
+  <article class="entry">
+    <a href="/" data-back data-reveal class="back-button" aria-label="Back">
+      <svg width="18" height="18" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <path d="M13 6 L8 11 L13 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </a>
+    <figure class="figure figure--hero">
+      <img
+        src={heroSrc}
+        alt={entry.data.title}
+        class="figure__img"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        style="view-transition-name: hero;"
+      />
+    </figure>
+
+    <h1 class="entry-title" data-reveal>{entry.data.title}</h1>
+    <Year date={entry.data.date} />
+    <div class="entry-body">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

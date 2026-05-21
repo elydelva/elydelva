@@ -1,0 +1,9 @@
+---
+interface Props {
+  date: Date;
+}
+const { date } = Astro.props;
+const formatted = date.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+const label = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+---
+<p class="entry-year" data-reveal>{label}</p>

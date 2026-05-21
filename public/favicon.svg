@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Cream/dark surface plate. Rounded square so it sits nicely cropped in tabs. -->
+  <rect x="2" y="2" width="60" height="60" rx="14" class="bg"/>
+
+  <!-- Italic serif "E" — Fraunces-flavored, hand-drawn with a single stroked path
+       so we can animate stroke-dashoffset (writes itself in) and SOFT-like wobble. -->
+  <g class="ink" transform="translate(18 14)">
+    <path
+      d="M30 6 Q22 2 14 4 Q8 5 6 12 Q4 19 10 22 Q16 24 22 22 M5 22 Q3 30 8 36 Q14 42 24 40 Q30 39 34 34"
+      stroke-width="5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      pathLength="100"
+      stroke-dasharray="100 100"
+      stroke-dashoffset="100">
+      <animate attributeName="stroke-dashoffset"
+               from="100" to="0"
+               dur="1.6s"
+               begin="0.15s"
+               fill="freeze"
+               calcMode="spline"
+               keyTimes="0;1"
+               keySplines="0.22 1 0.36 1"/>
+    </path>
+    <!-- Ink dot accent (the polaroid corner-pin feel) -->
+    <circle cx="34" cy="6" r="2" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.55s" fill="freeze"/>
+    </circle>
+  </g>
+
+  <style>
+    .bg { fill: #faf6f2; }
+    .ink { stroke: #432818; fill: #432818; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #1c1917; }
+      .ink { stroke: #fef1df; fill: #fef1df; }
+    }
+  </style>
+</svg>

@@ -1,0 +1,29 @@
+---
+interface Props {
+  src: string;
+  alt?: string;
+  caption?: string;
+  size?: "sm" | "md" | "lg" | "full";
+  hero?: boolean;
+  aspect?: string;
+}
+
+const { src, alt = "", caption, size = "md", hero = false, aspect } = Astro.props;
+const style = [
+  aspect ? `aspect-ratio:${aspect};` : "",
+  hero ? "view-transition-name:hero;" : "",
+].join("");
+---
+
+<figure class={`figure figure--${size}`}>
+  <img
+    src={src}
+    alt={alt}
+    class="figure__img"
+    loading={hero ? "eager" : "lazy"}
+    fetchpriority={hero ? "high" : "auto"}
+    decoding="async"
+    style={style || undefined}
+  />
+  {caption && <figcaption class="figure__caption">{caption}</figcaption>}
+</figure>

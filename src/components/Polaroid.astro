@@ -1,0 +1,77 @@
+---
+interface Props {
+  image: string;
+  stack?: string[];
+  alt?: string;
+  index?: number;
+  /** When set, the main polaroid img participates in a shared-element View Transition
+   *  with the hero image on the destination page that shares the same name. */
+  transitionName?: string;
+}
+
+const { image, stack = [], alt = "", index = 0, transitionName } = Astro.props;
+const eager = index < 3;
+
+// Deterministic micro-variation per row so rest state feels organic but SSR == client.
+const seed = (index * 9301 + 49297) % 233280;
+const rand = (offset: number) => {
+  const s = ((seed + offset) * 9301 + 49297) % 233280;
+  return s / 233280;
+};
+
+const mainRot = (rand(0) * 4 - 2).toFixed(2); // ±2°
+
+// Stack cards fan to BOTH sides on hover. Rest state has a more visible stack peek.
+// Card 0 → left, card 1 → right (deterministic so layout doesn't jitter on rehydrate).
+const cards = stack.slice(0, 2).map((_, i) => {
+  const dir = i === 0 ? -1 : 1; // alternate L / R
+  // Rest: more pronounced peek than before — visible stack feel.
+  const restR = (dir * (5 + rand(i * 7) * 3)).toFixed(2); // ±5–8°
+  const restTx = (dir * (5 + rand(i * 11) * 3)).toFixed(1); // 5–8px
+  const restTy = ((rand(i * 13) - 0.5) * 6).toFixed(1); // ±3px
+  // Hover: fan further in same direction as rest.
+  const fanTx = dir * (38 + rand(i * 17) * 6); // 38–44px each side
+  const fanTy = (rand(i * 19) - 0.5) * 5;
+  const fanR = dir * (12 + rand(i * 23) * 4); // 12–16°
+  return {
+    restR,
+    restTx,
+    restTy,
+    fanTx: fanTx.toFixed(1),
+    fanTy: fanTy.toFixed(1),
+    fanR: fanR.toFixed(1),
+  };
+});
+---
+
+<span class={`polaroid ${stack.length ? "has-stack" : "has-single"}`}>
+  {
+    cards.map((c, i) => (
+      <img
+        src={stack[i]}
+        alt=""
+        class="image-stack-card"
+        style={`
+          --rest-rot:${c.restR}deg;
+          --rest-tx:${c.restTx}px;
+          --rest-ty:${c.restTy}px;
+          --fan-rot:${c.fanR}deg;
+          --fan-tx:${c.fanTx}px;
+          --fan-ty:${c.fanTy}px;
+          z-index:${i + 1};
+        `}
+        loading="lazy"
+        decoding="async"
+      />
+    ))
+  }
+  <img
+    src={image}
+    alt={alt}
+    class="polaroid-card"
+    style={`--rot-to:${mainRot}deg; z-index:${stack.length + 2};`}
+    loading={eager ? "eager" : "lazy"}
+    fetchpriority={eager ? "high" : "auto"}
+    decoding="async"
+  />
+</span>
