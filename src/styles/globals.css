@@ -247,6 +247,48 @@ a {
   }
 }
 
+/* === Contact === */
+.contact-intro {
+  color: var(--primary);
+  max-width: 44ch;
+  text-wrap: pretty;
+  line-height: 1.5;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0.5rem 0 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.contact-list a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  color: var(--secondary);
+  border: 1px solid var(--divider);
+  transition: color 0.2s ease-out, border-color 0.2s ease-out, background 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.contact-list a:hover {
+  color: var(--heading);
+  border-color: color-mix(in srgb, var(--primary) 30%, transparent);
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
+  transform: translateY(-1px);
+}
+
+.contact-list svg {
+  width: 16px;
+  height: 16px;
+}
+
 /* === Entrance stagger === */
 @keyframes fade-in-blur {
   0% {
