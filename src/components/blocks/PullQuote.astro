@@ -1,0 +1,10 @@
+---
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+---
+
+<aside class="pull-quote" aria-label="Citation mise en avant">
+  <blockquote class="pull-quote__text">{text}</blockquote>
+</aside>

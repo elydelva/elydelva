@@ -7,9 +7,10 @@ interface Props {
   description?: string;
   preloadImage?: string;
   ogImage?: string;
+  wide?: boolean;
 }
 
-const { title, description = "Design and writing.", preloadImage, ogImage } = Astro.props;
+const { title, description = "Design and writing.", preloadImage, ogImage, wide } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const og = new URL(ogImage ?? "/og.png", Astro.site).href;
 ---
@@ -352,7 +353,7 @@ const og = new URL(ogImage ?? "/og.png", Astro.site).href;
     </script>
   </head>
   <body>
-    <main class="page">
+    <main class={`page${wide ? " page--wide" : ""}`}>
       <slot />
     </main>
   </body>

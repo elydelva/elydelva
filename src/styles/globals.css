@@ -69,6 +69,10 @@ a {
   padding: clamp(3rem, 8vw, 5rem) 1.5rem 6rem;
 }
 
+.page--wide {
+  max-width: 680px;
+}
+
 /* === Header === */
 .site-header {
   display: flex;
@@ -146,16 +150,6 @@ a {
   overflow: visible;
 }
 
-.entry-row::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(to right, var(--divider), transparent);
-  transition: opacity 0.25s ease-out;
-}
 
 .entry-row .label {
   color: var(--heading);
@@ -190,7 +184,6 @@ a {
   object-fit: cover;
   background: var(--polaroid-bg);
   border: 3px solid var(--polaroid-bg);
-  border-bottom-width: 9px;
   border-radius: 0;
   box-shadow: var(--polaroid-shadow);
   transition:
@@ -227,12 +220,20 @@ a {
 @media (hover: hover) {
   .page .entry-list,
   .page .entry-list h2,
-  .page .entry-list .entry-row {
+  .page .entry-list .entry-row,
+  .page .entry-list .entry-empty,
+  .page .contact h2,
+  .page .contact-intro,
+  .page .contact-list {
     transition: filter 0.25s ease-out, opacity 0.25s ease-out;
   }
 
   :root:not(.hover-cold) .page:has(.entry-row:hover) .entry-row,
-  :root:not(.hover-cold) .page:has(.entry-row:hover) .entry-list h2 {
+  :root:not(.hover-cold) .page:has(.entry-row:hover) .entry-list h2,
+  :root:not(.hover-cold) .page:has(.entry-row:hover) .entry-list .entry-empty,
+  :root:not(.hover-cold) .page:has(.entry-row:hover) .contact h2,
+  :root:not(.hover-cold) .page:has(.entry-row:hover) .contact-intro,
+  :root:not(.hover-cold) .page:has(.entry-row:hover) .contact-list {
     filter: blur(var(--hover-blur));
     opacity: 0.4;
   }
@@ -349,7 +350,7 @@ a {
 /* === Entry body (markdown pages) === */
 .entry {
   width: 100%;
-  max-width: 32rem;
+  max-width: 100%;
   margin: 0 auto;
   position: relative;
 }
@@ -366,6 +367,76 @@ a {
   margin-bottom: 1rem;
 }
 
+/* === Pull quote === */
+.pull-quote {
+  margin: 2.5rem -1.5rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid color-mix(in srgb, var(--heading) 20%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--heading) 20%, transparent);
+}
+
+.pull-quote__text {
+  all: unset;
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.375rem;
+  line-height: 1.35;
+  color: var(--heading);
+  letter-spacing: -0.01em;
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+}
+
+/* === Citation externe === */
+.citation {
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
+  border-left: 2px solid color-mix(in srgb, var(--heading) 35%, transparent);
+  background: color-mix(in srgb, var(--heading) 4%, transparent);
+  border-radius: 0 6px 6px 0;
+}
+
+.citation__quote {
+  all: unset;
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.citation__attribution {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--secondary);
+}
+
+.citation__author {
+  font-weight: 500;
+  color: var(--heading);
+}
+
+.citation__source {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--secondary) 40%, transparent);
+  text-underline-offset: 2px;
+}
+
+.citation__source:hover {
+  color: var(--heading);
+  text-decoration-color: var(--heading);
+}
+
+.citation__attribution::before {
+  content: "—";
+  color: color-mix(in srgb, var(--secondary) 50%, transparent);
+}
+
 .entry-body h1,
 .entry-body h2,
 .entry-body h3 {
@@ -373,6 +444,126 @@ a {
   margin: 2rem 0 0.75rem;
   font-family: var(--font-display);
   font-style: italic;
+  line-height: 1.2;
+}
+
+.entry-body h2 { font-size: 1.375rem; }
+.entry-body h3 { font-size: 1.125rem; }
+
+.entry-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+  border: 1px solid color-mix(in srgb, var(--heading) 20%, transparent);
+}
+
+.entry-body th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--heading);
+  padding: 0.5rem 0.875rem;
+  border: 1px solid color-mix(in srgb, var(--heading) 20%, transparent);
+  background: color-mix(in srgb, var(--heading) 6%, transparent);
+}
+
+.entry-body td {
+  padding: 0.5rem 0.875rem;
+  color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--heading) 20%, transparent);
+}
+
+.entry-body > blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 2px solid var(--heading);
+  background: color-mix(in srgb, var(--heading) 5%, transparent);
+  border-radius: 0 6px 6px 0;
+}
+
+.entry-body > blockquote p {
+  margin-bottom: 0;
+}
+
+.entry-body > blockquote p + p {
+  margin-top: 0.5rem;
+}
+
+
+.entry-body ul,
+.entry-body ol {
+  margin: 1rem 0 1.25rem;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.entry-body ul {
+  list-style: disc;
+}
+
+.entry-body ol {
+  list-style: decimal;
+}
+
+.entry-body li {
+  padding-left: 0.25rem;
+  color: var(--primary);
+}
+
+.entry-body li::marker {
+  color: var(--heading);
+  font-weight: 600;
+}
+
+.entry-body pre {
+  margin: 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  border: 1px solid color-mix(in srgb, var(--heading) 10%, transparent);
+  background: #f2e8df !important;
+}
+
+/* Shiki dual-theme: force dark vars when data-theme="dark" is set */
+[data-theme="dark"] .entry-body pre {
+  background: #2a1f1a !important;
+}
+
+[data-theme="dark"] .astro-code,
+[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: transparent !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+.astro-code,
+.astro-code span {
+  background-color: transparent !important;
+}
+
+.entry-body pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+}
+
+.entry-body :not(pre) > code {
+  font-size: 0.8125em;
+  padding: 0.15em 0.45em;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--heading) 8%, transparent);
+  color: var(--heading);
+  border: 1px solid color-mix(in srgb, var(--heading) 14%, transparent);
+  font-family: ui-monospace, "Cascadia Code", "Fira Code", monospace;
 }
 
 .entry-body a {
@@ -391,17 +582,18 @@ a {
   font-style: italic;
   font-weight: 500;
   font-size: 2rem;
+  line-height: 1.15;
   color: var(--heading);
   letter-spacing: -0.02em;
   font-variation-settings: "SOFT" 100, "opsz" 144;
-  margin: 2rem 0 0.25rem;
+  margin: 2rem 0 0.75rem;
 }
 
 .entry-year {
   font-family: var(--font-display);
   font-style: italic;
   color: var(--secondary);
-  font-size: 0.8125rem;
+  font-size: 1rem;
   margin: 0 0 2rem;
 }
 
@@ -458,7 +650,7 @@ a {
   height: auto;
   display: block;
   background: var(--polaroid-bg);
-  border: 10px solid var(--polaroid-bg);
+  border: 5px solid var(--polaroid-bg);
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.22),
     0 16px 40px -10px rgba(0, 0, 0, 0.32);
@@ -473,8 +665,8 @@ a {
   max-width: 100%;
   aspect-ratio: 3 / 2;
   object-fit: cover;
-  border-width: 12px;
-  border-bottom-width: 12px;
+  border-width: 5px;
+  border-bottom-width: 5px;
 }
 
 .figure__caption {
@@ -539,8 +731,7 @@ a {
   aspect-ratio: 72 / 46; /* match polaroid aspect for a clean morph */
   object-fit: cover;
   background: var(--polaroid-bg);
-  border: 14px solid var(--polaroid-bg);
-  border-bottom-width: 44px;
+  border: 5px solid var(--polaroid-bg);
   border-radius: 0;
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.18),

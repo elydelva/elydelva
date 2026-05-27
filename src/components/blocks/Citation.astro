@@ -1,0 +1,21 @@
+---
+interface Props {
+  quote: string;
+  author: string;
+  source?: string;
+  href?: string;
+}
+const { quote, author, source, href } = Astro.props;
+---
+
+<figure class="citation">
+  <blockquote class="citation__quote">{quote}</blockquote>
+  <figcaption class="citation__attribution">
+    <span class="citation__author">{author}</span>
+    {source && (
+      href
+        ? <a class="citation__source" href={href} target="_blank" rel="noopener">{source}</a>
+        : <span class="citation__source">{source}</span>
+    )}
+  </figcaption>
+</figure>
