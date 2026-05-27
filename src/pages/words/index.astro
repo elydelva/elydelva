@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import BaseLayout from "../../layouts/BaseLayout.astro";
 import Polaroid from "../../components/Polaroid.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const words = (await getCollection("words")).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),

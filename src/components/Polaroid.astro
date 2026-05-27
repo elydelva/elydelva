@@ -73,5 +73,6 @@ const cards = stack.slice(0, 2).map((_, i) => {
     loading={eager ? "eager" : "lazy"}
     fetchpriority={eager ? "high" : "auto"}
     decoding="async"
+    transition:name={transitionName}
   />
 </span>
