@@ -16,14 +16,14 @@ const workHidden = work.slice(VISIBLE);
 const wordsVisible = words.slice(0, VISIBLE);
 const wordsHidden = words.slice(VISIBLE);
 
-const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "numeric" });
+const fmt = (d: Date) => d.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
 const latest = work[0]?.data.date ?? new Date();
 ---
 
-<BaseLayout title="Ely Delva" description="Design and writing by Ely Delva.">
+<BaseLayout title="Ely Delva" description="Design et écriture par Ely Delva.">
   <header class="site-header" style="--stagger: 0" data-motion>
     <Signature />
-    <span class="updated">Updated {fmt(latest)}</span>
+    <span class="updated">Mis à jour {fmt(latest)}</span>
   </header>
 
   <p class="bio" style="--stagger: 1" data-motion>
@@ -31,9 +31,9 @@ const latest = work[0]?.data.date ?? new Date();
   </p>
 
   <section class="entry-list" style="--stagger: 2" data-motion>
-    <h2>works</h2>
+    <h2>Travaux</h2>
     {work.length === 0 && (
-      <p class="entry-empty">Quietly rebuilding this shelf. New pieces soon.</p>
+      <p class="entry-empty">Je reconstruis doucement cette étagère. De nouvelles pièces arrivent bientôt.</p>
     )}
     {
       workVisible.map((entry, i) => (
@@ -61,7 +61,7 @@ const latest = work[0]?.data.date ?? new Date();
             index={workVisible.length}
           />
           <span class="entry-content">
-            <span class="label">More</span>
+            <span class="label">Plus</span>
             <span class="meta chevron">›</span>
           </span>
         </a>
@@ -70,9 +70,9 @@ const latest = work[0]?.data.date ?? new Date();
   </section>
 
   <section class="entry-list" style="--stagger: 3" data-motion>
-    <h2>words</h2>
+    <h2>Écrits</h2>
     {words.length === 0 && (
-      <p class="entry-empty">Drafts are simmering. Nothing to read yet.</p>
+      <p class="entry-empty">Des brouillons mijotent. Rien à lire pour l'instant.</p>
     )}
     {
       wordsVisible.map((entry, i) => (
@@ -100,7 +100,7 @@ const latest = work[0]?.data.date ?? new Date();
             index={wordsVisible.length + 10}
           />
           <span class="entry-content">
-            <span class="label">More</span>
+            <span class="label">Plus</span>
             <span class="meta chevron">›</span>
           </span>
         </a>
@@ -109,7 +109,7 @@ const latest = work[0]?.data.date ?? new Date();
   </section>
 
   <section class="contact" style="--stagger: 4" data-motion>
-    <h2>contact</h2>
+    <h2>Contact</h2>
     <p class="contact-intro">Toujours partant pour discuter, de projets, d'idées, ou juste pour dire bonjour.</p>
     <ul class="contact-list">
       <li>

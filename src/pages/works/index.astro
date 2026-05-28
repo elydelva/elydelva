@@ -4,19 +4,19 @@ import Polaroid from "../../components/Polaroid.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const work = (await getCollection("works")).sort((a, b) => a.data.order - b.data.order);
-const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "numeric" });
+const fmt = (d: Date) => d.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
 ---
 
-<BaseLayout title="Works — Ely Delva">
+<BaseLayout title="Travaux — Ely Delva">
   <header class="site-header" data-motion style="--stagger: 0">
-    <a href="/" class="updated">← Back</a>
+    <a href="/" class="updated">← Retour</a>
   </header>
 
   <section class="entry-list" data-motion style="--stagger: 1">
-    <h2>works</h2>
+    <h2>Travaux</h2>
     {work.length === 0 ? (
       <p class="entry-empty">
-        Quietly rebuilding this shelf. New pieces soon — until then, you can peek at what I'm thinking about in <a href="/words">words</a>.
+        Je reconstruis doucement cette étagère. De nouvelles pièces arrivent bientôt — en attendant, vous pouvez jeter un œil à ce que je pense dans <a href="/words">écrits</a>.
       </p>
     ) : (
       work.map((entry, i) => (

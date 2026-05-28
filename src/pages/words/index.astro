@@ -6,19 +6,19 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const words = (await getCollection("words")).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "numeric" });
+const fmt = (d: Date) => d.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
 ---
 
-<BaseLayout title="Words — Ely Delva">
+<BaseLayout title="Écrits — Ely Delva">
   <header class="site-header" data-motion style="--stagger: 0">
-    <a href="/" class="updated">← Back</a>
+    <a href="/" class="updated">← Retour</a>
   </header>
 
   <section class="entry-list" data-motion style="--stagger: 1">
-    <h2>words</h2>
+    <h2>Écrits</h2>
     {words.length === 0 ? (
       <p class="entry-empty">
-        Drafts are simmering. Nothing to read yet — check back, or wander over to <a href="/work">work</a>.
+        Des brouillons mijotent. Rien à lire pour l'instant — revenez bientôt, ou allez voir les <a href="/works">travaux</a>.
       </p>
     ) : (
       words.map((entry, i) => (

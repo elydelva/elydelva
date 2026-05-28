@@ -10,13 +10,13 @@ interface Props {
   wide?: boolean;
 }
 
-const { title, description = "Design and writing.", preloadImage, ogImage, wide } = Astro.props;
+const { title, description = "Design et écriture.", preloadImage, ogImage, wide } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const og = new URL(ogImage ?? "/og.png", Astro.site).href;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,7 +39,7 @@ const og = new URL(ogImage ?? "/og.png", Astro.site).href;
     <meta property="og:image" content={og} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Ely Delva — design and writing." />
+    <meta property="og:image:alt" content="Ely Delva — design et écriture." />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
