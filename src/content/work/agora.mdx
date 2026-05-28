@@ -47,11 +47,11 @@ Mais une IA entraînée pour être utile et non-conflictuelle ne me donne pas d'
 
 L'esprit critique ne se développe pas en consommant des synthèses. Il se développe en confrontant des positions contraires, en étant forcé de choisir, en comprenant ce qu'on sacrifie quand on penche d'un côté.
 
-Il n'y avait pas de produit qui proposait ça. Alors on a commencé à imaginer à quoi ça pourrait ressembler.
+Il n'y avait pas de produit qui proposait ça. Alors j'ai commencé à imaginer à quoi ça pourrait ressembler.
 
 <Squiggle />
 
-## Ce qu'on a imaginé : le topic, le take, la position
+## Ce que j'ai imaginé : le topic, le take, la position
 
 Le produit s'articule autour d'une notion centrale : le **topic**.
 
@@ -73,23 +73,23 @@ D'abord des wireframes abstraits puis des maquettes assez complètes pour qu'on 
 
 Je les ai montrées à des amis. Et j'ai posé des questions. Des vraies, pas des questions qui cherchent à entendre "oui c'est une super idée". Je m'étais inspiré du livre *The Mom Test*, dont le principe central est qu'on ne doit pas poser des questions sur le produit qu'on a construit, mais sur le problème qu'on cherche à résoudre. *Comment tu te forges un avis sur un sujet qui te touche ? Est-ce que ça t'arrive de chercher l'avis de quelqu'un avec qui tu n'es pas d'accord ? Qu'est-ce qui t'en empêche ?*
 
-Ce qu'on a appris : le besoin existait au-delà de moi. Plusieurs personnes décrivaient la même frustration avec Twitter : trop de bruit, pas assez de fond. Et la forme du débat structuré résonnait. Personne n'avait l'air d'avoir besoin qu'on leur explique à quoi ça servait.
+Ce que j'ai appris : le besoin existait au-delà de moi. Plusieurs personnes décrivaient la même frustration avec Twitter : trop de bruit, pas assez de fond. Et la forme du débat structuré résonnait. Personne n'avait l'air d'avoir besoin qu'on leur explique à quoi ça servait.
 
-Ce qui a aussi émergé : la crainte du troll. La peur que l'espace devienne ce qu'on essaie précisément d'éviter. Ça a confirmé qu'il fallait penser sérieusement au produit d'un bout à l'autre. Pas uniquement l'interface, mais la façon dont les opinions circulent.
+Ce qui a aussi émergé : la crainte du troll. La peur que l'espace devienne ce que j'essayais précisément d'éviter. Ça a confirmé qu'il fallait penser sérieusement au produit d'un bout à l'autre. Pas uniquement l'interface, mais la façon dont les opinions circulent.
 
 <Squiggle />
 
-## La partie où on s'est distingué : casser les bulles d'opinion
+## La partie où je me suis distingué : casser les bulles d'opinion
 
 La plupart des réseaux sociaux optimisent pour l'engagement. L'algorithme de Facebook, TikTok ou YouTube cherche à maximiser le temps passé sur la plateforme. Le moyen le plus efficace pour ça : montrer à chaque utilisateur du contenu qu'il va approuver, avec lequel il va s'identifier, qui va confirmer ce qu'il pense déjà.
 
 Le résultat, c'est ce qu'Eli Pariser a documenté en 2011 dans *The Filter Bubble* : des chambres d'écho. Chacun dans sa bulle, convaincu que sa vision du monde est la normale. Des études récentes confirment que l'exposition répétée à des opinions homogènes renforce les biais de confirmation plutôt que de les corriger.
 
-On a décidé de faire l'inverse.
+J'ai décidé de faire l'inverse.
 
-J'avais lu des papiers de recherche publiés par Google, Meta et d'autres sur leurs algorithmes de recommandation. Les mécanismes sont bien documentés : on comprend comment ils pondèrent l'engagement récent, la similarité de contenu, les signaux implicites du comportement utilisateur. On s'est servi de cette compréhension pour construire quelque chose d'antagoniste.
+J'avais lu des papiers de recherche publiés par Google, Meta et d'autres sur leurs algorithmes de recommandation. Les mécanismes sont bien documentés : on comprend comment ils pondèrent l'engagement récent, la similarité de contenu, les signaux implicites du comportement utilisateur. Je m'en suis servi pour construire quelque chose d'antagoniste.
 
-Notre algorithme de recommandation maximise délibérément la **diversité des opinions**. Au lieu de montrer à un utilisateur du contenu qui ressemble à ce qu'il a déjà approuvé, on lui montre des takes qui défendent des positions auxquelles il n'adhère pas nécessairement. Pas pour le choquer, mais pour qu'il soit exposé à des arguments qu'il n'aurait pas formulés lui-même.
+Mon algorithme de recommandation maximise délibérément la **diversité des opinions**. Au lieu de montrer à un utilisateur du contenu qui ressemble à ce qu'il a déjà approuvé, on lui montre des takes qui défendent des positions auxquelles il n'adhère pas nécessairement. Pas pour le choquer, mais pour qu'il soit exposé à des arguments qu'il n'aurait pas formulés lui-même.
 
 L'idée derrière : collectivement, plus on s'expose à des raisonnements contraires, plus on se rapproche de quelque chose qui ressemble à la vérité.
 
@@ -97,7 +97,7 @@ L'idée derrière : collectivement, plus on s'expose à des raisonnements contra
 
 ## La technique, pour finir
 
-On est sur mobile avec Expo, SDK 55, New Architecture activée, Expo Router pour le routing. React Native 0.83 avec React 19. Pour le state, Jotai côté atomes, TanStack Query pour les données serveur.
+L'app est sur mobile avec Expo, SDK 55, New Architecture activée, Expo Router pour le routing. React Native 0.83 avec React 19. Pour le state, Jotai côté atomes, TanStack Query pour les données serveur.
 
 Le backend tourne sur Cloudflare Workers. Hono pour le HTTP, tRPC pour une API entièrement type-safe côté client comme serveur. La base est D1 (SQLite managé par Cloudflare), avec Drizzle ORM 1.0. Les assets passent par R2, le cache et les sessions par KV.
 
@@ -105,23 +105,37 @@ L'architecture est hexagonale : la logique métier ne touche pas la base de donn
 
 Le système de recommandation est le morceau le plus travaillé. Il fonctionne en trois passes.
 
-**Trouver les candidats.** D'abord, on cherche les topics susceptibles d'intéresser l'utilisateur. Pas seulement les plus récents, mais ceux qui lui correspondent vraiment. Pour ça, on utilise la **similarité sémantique** : chaque utilisateur et chaque topic est représenté par un vecteur numérique qui capture ce qu'il "signifie". Comparer deux vecteurs dit si deux choses sont proches dans le sens, pas juste dans les mots. C'est le même principe que Google utilise quand il comprend qu'une recherche sur "voiture électrique" est pertinente pour un article sur "Tesla" sans que le mot soit présent. On repère aussi les topics qui s'activent soudainement (beaucoup de réponses en peu de temps) et ceux où la position dominante est contraire à ce que l'utilisateur a voté récemment. Cette dernière source, c'est le cœur de l'anti-bulle.
+### Trouver les candidats.
 
-**Classer ce qu'on a trouvé.** Ensuite, on score chaque topic candidat sur une dizaine de critères pondérés. Deux méritent une explication. Le **bandit de Thompson** est un algorithme qu'on emprunte au monde des jeux et de l'exploration. Il résout le problème suivant : quand un utilisateur est nouveau sur une catégorie, comment l'explorer sans le noyer dedans ? L'algorithme maintient une estimation de l'intérêt probable de l'utilisateur pour chaque catégorie, et la met à jour à chaque interaction. Spotify l'utilise pour décider quelle nouvelle musique glisser dans une playlist sans prendre de risque excessif. Le **signal de temps de lecture** mesure combien de secondes l'utilisateur a vraiment passé sur un topic. Pas s'il a cliqué, mais s'il a lu. YouTube et TikTok utilisent ce signal depuis des années parce qu'il est bien plus honnête qu'un like.
+D'abord, je cherche les topics susceptibles d'intéresser l'utilisateur. Pas seulement les plus récents, mais ceux qui lui correspondent vraiment.
 
-**Diversifier le résultat.** Une fois le classement fait, on passe par une dernière étape pour éviter que le feed ne devienne un tunnel : la **MMR** (Maximal Marginal Relevance), un algorithme de diversification qui pénalise les topics trop similaires entre eux. L'idée est née dans les années 90 pour améliorer les moteurs de recherche : si les dix premiers résultats disent tous la même chose, on a un problème. Netflix et Amazon l'ont repris pour leurs systèmes de recommandation. On y ajoute des règles explicites : au moins un topic dissonant par tranche de feed, et jamais plus de 30% du feed issu d'une même catégorie.
+Pour ça, j'utilise la **similarité sémantique** : chaque utilisateur et chaque topic est représenté par un vecteur numérique qui capture ce qu'il "signifie". Comparer deux vecteurs dit si deux choses sont proches dans le sens, pas juste dans les mots. C'est le même principe que Google utilise quand il comprend qu'une recherche sur "voiture électrique" est pertinente pour un article sur "Tesla" sans que le mot soit présent.
+
+Je repère aussi les topics qui s'activent soudainement (beaucoup de réponses en peu de temps) et ceux où la position dominante est contraire à ce que l'utilisateur a voté récemment. Cette dernière source, c'est le cœur de l'anti-bulle.
+
+### Classer ce qu'on a trouvé
+
+Ensuite, je score chaque topic candidat sur une dizaine de critères pondérés. Deux méritent une explication. 
+
+Le **bandit de Thompson** est un algorithme qu'on emprunte au monde des jeux et de l'exploration. Il résout le problème suivant : quand un utilisateur est nouveau sur une catégorie, comment l'explorer sans le noyer dedans ? L'algorithme maintient une estimation de l'intérêt probable de l'utilisateur pour chaque catégorie, et la met à jour à chaque interaction. Spotify l'utilise pour décider quelle nouvelle musique glisser dans une playlist sans prendre de risque excessif.
+
+Le **signal de temps de lecture** mesure combien de secondes l'utilisateur a vraiment passé sur un topic. Pas s'il a cliqué, mais s'il a lu. YouTube et TikTok utilisent ce signal depuis des années parce qu'il est bien plus honnête qu'un like.
+
+### Diversifier le résultat
+
+Une fois le classement fait, je passe par une dernière étape pour éviter que le feed ne devienne un tunnel : la **MMR** (Maximal Marginal Relevance), un algorithme de diversification qui pénalise les topics trop similaires entre eux. L'idée est née dans les années 90 pour améliorer les moteurs de recherche : si les dix premiers résultats disent tous la même chose, on a un problème. Netflix et Amazon l'ont repris pour leurs systèmes de recommandation. J'y ajoute des règles explicites : au moins un topic dissonant par tranche de feed, et jamais plus de 30% du feed issu d'une même catégorie.
 
 Chaque utilisateur a aussi un **score de dissonance** entre 0 et 1, recalculé chaque jour. C'est une estimation de son rapport à l'opinion contraire : est-ce qu'il a tendance à rester sur les contenus qui lui ressemblent, ou est-ce qu'il s'attarde sur ceux avec lesquels il n'est pas d'accord ? Ce score règle l'intensité de la source anti-bulle dans son feed. Il ne s'annule jamais, mais il s'adapte à ses habitudes réelles.
 
-Pour savoir si tout ça fonctionne, on mesure la qualité du classement avec le **NDCG**, un score standard dans le monde de la recherche d'information qui évalue si les meilleurs résultats arrivent bien en tête, et pas au milieu. On garde aussi un groupe d'utilisateurs à qui on ne montre qu'un feed chronologique simple, sans recommandation. C'est notre point de comparaison : si notre algorithme ne fait pas mieux que l'ordre d'arrivée, on a un problème.
+Pour savoir si tout ça fonctionne, je mesure la qualité du classement avec le **NDCG**, un score standard dans le monde de la recherche d'information qui évalue si les meilleurs résultats arrivent bien en tête, et pas au milieu. Je garde aussi un groupe d'utilisateurs à qui je ne montre qu'un feed chronologique simple, sans recommandation. C'est mon point de comparaison : si l'algorithme ne fait pas mieux que l'ordre d'arrivée, j'ai un problème.
 
 <Squiggle />
 
-## Ce qu'on a appris, et où on en est
+## Ce que j'ai appris, et où j'en suis
 
-Le produit est en **private beta** en ce moment. Un cercle restreint de proches fait des tests, ce qu'on appelle des tests singes : explorer les coins les moins évidents, remonter les bugs simples avant qu'on ouvre à plus de monde. Dans la semaine qui suit, on ouvre TestFlight sur Apple pour accueillir une première vague d'utilisateurs extérieurs.
+Le produit est en **private beta** en ce moment. Un cercle restreint de proches fait des tests, ce que j'appelle des tests singes : explorer les coins les moins évidents, remonter les bugs simples avant d'ouvrir à plus de monde. Dans la semaine qui suit, j'ouvre TestFlight sur Apple pour accueillir une première vague d'utilisateurs extérieurs.
 
-Il y a un apprentissage personnel que je retiens autant que le reste. Je viens du technique. J'ai toujours su écrire du code, choisir une architecture, déboguer. Ce projet est le premier où je me suis vraiment imposé une rigueur produit : des interviews utilisateurs construites pour ne pas biaiser les réponses, un guide d'entretien inspiré du *Mom Test*, une démarche pour extraire des besoins réels plutôt que de valider une idée qu'on avait déjà. C'est une discipline différente, et honnêtement plus difficile pour moi que d'écrire un algorithme de recommandation.
+Il y a un apprentissage personnel que je retiens autant que le reste. Je viens du technique. J'ai toujours su écrire du code, choisir une architecture, déboguer. Ce projet est le premier où je me suis vraiment imposé une rigueur produit : des interviews utilisateurs construites pour ne pas biaiser les réponses, un guide d'entretien inspiré du *Mom Test*, une démarche pour extraire des besoins réels plutôt que de valider une idée que j'avais déjà. C'est une discipline différente, et honnêtement plus difficile pour moi que d'écrire un algorithme de recommandation.
 
 Et côté développement, c'est aussi le premier projet où j'ai vraiment délégué des morceaux de code à l'IA, principalement Claude Code. Pas l'architecture, pas les grandes décisions, pas les choix de stack. Ça m'a permis d'avancer à une vitesse que je n'aurais pas eue seul, tout en gardant la main sur ce qui compte.
 
