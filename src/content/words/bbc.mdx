@@ -1,0 +1,114 @@
+---
+title: "J'ai pris le contrôle des visios de mon collège"
+description: "Pendant le confinement, à quatorze ans, je m'ennuyais en cours de français. Un jour, au lieu de suivre la visio, je me suis demandé comment elle marchait. Ce que j'ai trouvé dessous m'a appris ma première vraie leçon de sécurité : un logiciel certifié par l'État n'est pas forcément un logiciel sûr."
+date: 2026-05-28
+image: "/words/blackboard-collaborate/cover.png"
+heroImage: "/words/blackboard-collaborate/cover.png"
+stack: []
+order: 1
+---
+
+import Figure from "../../components/blocks/Figure.astro";
+import Squiggle from "../../components/blocks/Squiggle.astro";
+import PullQuote from "../../components/blocks/PullQuote.astro";
+import Citation from "../../components/blocks/Citation.astro";
+
+Pendant le confinement, à quatorze ans, je m'ennuyais en cours de français. Un jour, au lieu de suivre la visio, je me suis demandé comment elle marchait. Ce que j'ai trouvé dessous m'a appris ma première vraie leçon de sécurité, et m'a confirmé ce que je voulais faire de ma vie.
+
+<Squiggle />
+
+## Le confinement, et une bulle de collégiens
+
+Il faut se souvenir de ce qu'était ce printemps 2020. Un pays qui s'arrête en quelques jours. Une allocution le soir, les rues vides le lendemain. Des attestations qu'on remplit à la main pour aller chercher du pain. Un silence dehors qui ne ressemblait à rien de connu. On comptait les morts à la télévision, et les adultes autour de moi n'avaient pas de réponse, ce qui était bien la chose la plus étrange.
+
+L'école s'est arrêtée, puis a tenté de redémarrer ailleurs, dans la précipitation. Il a fallu inventer le collège à distance en une semaine, avec les moyens du bord. C'est là que **Blackboard Collaborate** est arrivé dans nos classes : une plateforme de visioconférence certifiée, validée, déployée par l'Éducation nationale. On était censés y retrouver nos cours.
+
+Nous, on n'a pas vécu ça comme un drame. J'avais treize, quatorze ans, j'étais en quatrième puis en troisième, et à cet âge-là le monde qui s'effondre dehors reste lointain. Pendant que le pays retenait son souffle, on s'était fabriqué une bulle, et la bulle se portait bien. Les cours en visio, on les suivait à moitié : c'était l'époque des serveurs Minecraft ouverts en fond avec TLauncher pendant les heures de français, du Discord de classe qu'on modérait nous-mêmes, des copains à qui on apprenait à installer un Minecraft cracké. Pour nous, ce confinement, c'était surtout de longues vacances déguisées.
+
+<Squiggle />
+
+## L'ennui, et le réflexe de regarder dessous
+
+Dans cette bulle, j'avais un coin un peu à part. Je touchais à l'informatique depuis déjà quatre ou cinq ans. Rien de spectaculaire : un serveur Minecraft, deux ou trois petits jeux en Python avec du SQLite et des fenêtres en Tkinter. Des bricoles de gamin curieux. Mais ça avait laissé un réflexe : devant un logiciel, je ne voyais pas seulement ce qu'il affichait. Je me demandais ce qu'il y avait dessous.
+
+Puis il y a eu l'ennui. Le vrai. Celui des fenêtres de quarante-cinq minutes qui s'enchaînent et où plus personne n'écoute. Au bout d'un moment, même jouer ne suffit plus. Un jour, au lieu de regarder la visio, j'ai regardé la visio. J'ai ouvert l'inspecteur d'éléments, et j'ai commencé à fouiller.
+
+<Squiggle />
+
+## Un surligneur, une imprimante, et un protocole que je ne connaissais pas
+
+Première surprise. Je croyais que ce logiciel marchait avec de simples requêtes, des allers-retours classiques entre mon ordinateur et un serveur, parce que c'était la seule chose que je connaissais. Ce n'était pas ça. Les échanges passaient par un protocole que je n'avais jamais vu : le **WebSocket**.
+
+Contrairement à une requête classique, qui demande quelque chose puis raccroche aussitôt, un WebSocket garde une ligne ouverte en permanence, dans les deux sens, comme un appel téléphonique qu'on ne coupe jamais. Le serveur peut parler quand il veut, le client aussi. Je ne savais pas ce que c'était, et il fallait aller l'observer précisément dans Chrome. Alors je me le suis appris, seul, le soir. Comment m'y brancher d'abord. Puis pourquoi je me faisais éjecter en boucle, ce qui m'a fait découvrir l'authentification et les **tokens temporaires**, ces jetons d'accès à durée limitée qui décident qui a le droit de rester connecté. J'ai fini par reproduire le mécanisme et garder mon tunnel ouvert.
+
+Restait le plus dur, et de loin le plus long : comprendre ce qui circulait dans ce tunnel. Les messages n'étaient pas lisibles. Pas du texte clair, mais une sorte de langage cryptique, de l'hexadécimal brouillé. Pas un vrai chiffrement, je l'ai compris plus tard, mais une **obfuscation** volontaire : du contenu rendu illisible exprès, juste assez pour décourager le curieux moyen et le faire abandonner.
+
+Je n'ai pas abandonné. J'ai fait la chose la moins élégante du monde, et la plus efficace : j'ai imprimé les conversations. Sur du vrai papier. Et j'ai pris un surligneur. Je comparais les échanges entre eux, je marquais les passages communs, j'isolais les fragments qui revenaient. Petit à petit, les motifs se sont détachés : telle balise pour telle action. À force, j'avais devant moi, sur des feuilles surlignées, le catalogue presque complet de ce que le client et le serveur se racontaient.
+
+Mon père regardait ça de loin. Il travaillait dans la tech, et ça l'amusait sincèrement de voir son fils décortiquer un système. Mais il ne m'a jamais guidé : sa philosophie a toujours été de me laisser me débrouiller seul. Il était une oreille, rien de plus. Ce n'est qu'à la toute fin qu'il a souri en me disant que j'aurais pu taper *diff en ligne* et m'épargner des nuits de comparaison à la main. Ma mère, elle, avait surtout peur que la police débarque un matin et que je me fasse renvoyer.
+
+<Squiggle />
+
+## Le BBC SDK : mon propre client
+
+Avec ce catalogue, j'ai écrit mon propre client. Un petit outil à moi, largement inspiré de **Discord.js** dont je me servais déjà beaucoup. Je l'ai appelé le **BBC SDK**. On y entrait son adresse académique et son mot de passe, ça s'enregistrait, et ça ouvrait une connexion directe vers le lien d'une visio, sans passer par l'interface officielle.
+
+À partir de là, je n'étais plus un élève devant un écran. J'étais un programme qui parlait au serveur dans sa propre langue. Et c'est en lui parlant que les vrais trous sont apparus.
+
+<Squiggle />
+
+## Trois failles
+
+Les trois découvertes qui suivent sont, avec le recul, trois manuels de ce qu'il ne faut pas faire. À l'époque, c'étaient juste des portes que personne n'avait fermées.
+
+### La connexion anonyme.
+
+Pour entrer normalement dans une session, il fallait se connecter, être accepté, puis valider. À cette dernière étape, le client renvoyait discrètement des informations sur la machine. Si on ne les fournissait pas, on restait coincé dans un état intermédiaire, *en cours de connexion*. 
+
+Sauf que dans cet état, le serveur acceptait quand même les actions : envoyer des messages, interagir, exister dans la salle. Le plus troublant, c'est que l'interface n'avait rien prévu contre ces comptes sans visage. Pas de bouton pour les expulser, pas de bannissement possible. 
+
+Le système était dans une situation où il ne pouvait littéralement rien faire contre eux.
+
+### L'usurpation d'identité.
+
+En continuant à classer mes feuilles, j'ai remarqué que chaque message transmettait aussi l'identifiant de son expéditeur. La plupart du temps c'était le nôtre, donc personne ne se posait la question. Je me suis demandé ce qui arriverait si j'y mettais celui de quelqu'un d'autre.
+
+C'est le moment de préciser une contrainte : je ne pouvais pas créer de visio moi-même, il fallait en attendre une pour expérimenter. Mes journées de recherche tenaient donc dans des fenêtres de quarante-cinq minutes. Un laboratoire qui n'ouvrait que trois quarts d'heure à la fois : je planifiais, j'exécutais mes tests, je tirais mes conclusions, et je préparais déjà la prochaine session.
+
+Ce jour-là, j'ai listé les participants depuis mon terminal, j'ai récupéré l'identifiant d'un ami, et j'ai cliqué sur envoyer. Je m'attendais à une erreur. Aucune erreur. Le message de mon ami est apparu dans la visio. Sauf que ce n'était pas lui, c'était moi. Le serveur croyait sur parole ce que le client lui annonçait.
+
+C'est exactement ce qu'on appelle un défaut de contrôle d'accès : la vérification de *qui fait quoi* est censée se faire côté serveur, jamais sur la seule déclaration du client. Ici, elle ne se faisait nulle part.
+
+### L'absence de limite d'appels
+
+J'avais découvert ailleurs, en bricolant des bots Discord pour spammer mes copains, qu'il existait une protection appelée **rate limit** : une limite qui empêche un même identifiant d'appeler deux cents fois la même chose en une seconde.
+
+C'est ce qui protège un service contre l'inondation. Je suis allé vérifier si Blackboard en avait. Il n'y en avait pas. Je pouvais connecter un nombre illimité de comptes.
+
+Alors j'ai écrit de quoi en faire entrer cinq cents d'un coup dans une même visio, les faire tous parler, puis les faire tous se déconnecter ensemble. Une vague, sur commande, contre laquelle la salle n'avait aucune défense.
+
+Mises bout à bout, ces trois failles disaient la même chose. Il manquait ce qu'on appelle des **guards** : des vérifications, posées côté serveur, qui contrôlent qu'une action a le droit d'exister avant de l'exécuter. Ici, il n'y en avait aucun.
+
+<Squiggle />
+
+## Dieu dans la visio
+
+Je ne vais pas faire semblant d'avoir été sage. Sur le moment, ce pouvoir était grisant, comme passer en grand angle d'un coup. Les profs, qui d'ordinaire tiennent la salle et en sont les maîtres incontestés, dépendaient sans le savoir d'un pouvoir silencieux. Je pouvais les couper, les déconnecter, leur faire dire des choses. Je pouvais bannir, muter, réagir à la place de n'importe qui.
+
+Mon préféré, c'était de sortir tout haut, en public, ce qu'un élève venait de glisser en privé à un copain. Un petit *elle est relou la prof* qui apparaissait soudain devant toute la classe, sous le nom de quelqu'un qui jurait que ce n'était pas lui. La confusion, ensuite, se débrouillait toute seule. Et je dois ajouter un détail, parce qu'il dit déjà qui j'étais : mes bots ne se connectaient jamais en direct. Je les faisais passer par des proxies achetés dix centimes, en chaîne, que je faisais tourner à chaque visio pour brouiller l'origine. Personne, jamais, n'a su d'où ça venait.
+
+<Squiggle />
+
+## Ce que j'en ai retenu
+
+Il n'y a eu aucune conséquence. Ça s'est arrêté tout seul, le jour où le confinement a pris fin et où les salles ont rouvert. Avec le recul, je suis un peu gêné. Pas beaucoup. Je sais que je n'ai pas dû être reposant pour mes profs, qui faisaient déjà de leur mieux dans une situation impossible, et je leur dois une forme d'excuse tranquille. Mais je sais aussi que je n'ai abîmé personne, pas vraiment. J'ai mis un peu d'animation dans des heures qui étaient déjà mortes.
+
+L'essentiel n'est pas là, de toute façon. L'essentiel, c'est ce que ces feuilles surlignées m'ont appris en creux. J'ai compris ce qu'était un guard, à quoi sert un rate limit, pourquoi on ne fait jamais confiance à ce que le client raconte. Et je ne l'ai pas appris dans un cours : je l'ai appris en constatant l'absence de tout ça, sur un outil certifié, validé, déployé par l'État dans toutes les classes de France. Un tampon officiel garantit une conformité administrative. Il ne garantit pas qu'un système tienne debout face à quelqu'un qui prend le temps de l'observer. C'est sans doute la leçon la plus durable que cette année-là m'a laissée.
+
+Le reste, c'est une confirmation. J'ai compris que j'aimais ça : comprendre comment une chose est faite, et ressentir ce moment net, presque calme, où elle cède sous le travail d'observation. Aujourd'hui je construis des systèmes pour de vrai, et il y a toujours, quelque part, un gamin de quatorze ans qui regarde ce que j'ai laissé en dessous.
+
+Une dernière chose, et c'est peut-être la plus parlante. À l'époque, il n'y avait pas d'IA pour penser à ma place. Le travail était entièrement manuel : un navigateur, une imprimante, un surligneur, des feuilles, et des fenêtres de quarante-cinq minutes. Aujourd'hui, je délègue des morceaux entiers de code à des outils que ce gamin-là n'aurait pas pu imaginer. Mais le réflexe, lui, n'a pas changé. Regarder dessous.
+
+<Squiggle />
+
+*[WebSocket — MDN](https://developer.mozilla.org/fr/docs/Web/API/WebSockets_API) · [OWASP Top 10 — Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/) · [OWASP — Rate Limiting](https://owasp.org/www-community/controls/Blocking_Brute_Force_Attacks) · [Blackboard Collaborate](https://www.anthology.com/products/teaching-and-learning/learning-effectiveness/blackboard-collaborate)*

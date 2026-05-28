@@ -4,7 +4,7 @@ import Year from "../../components/blocks/Year.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
-  const entries = await getCollection("work");
+  const entries = await getCollection("works");
   return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 

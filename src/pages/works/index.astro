@@ -3,17 +3,17 @@ import { getCollection } from "astro:content";
 import Polaroid from "../../components/Polaroid.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-const work = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+const work = (await getCollection("works")).sort((a, b) => a.data.order - b.data.order);
 const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "numeric" });
 ---
 
-<BaseLayout title="Work — Ely Delva">
+<BaseLayout title="Works — Ely Delva">
   <header class="site-header" data-motion style="--stagger: 0">
     <a href="/" class="updated">← Back</a>
   </header>
 
   <section class="entry-list" data-motion style="--stagger: 1">
-    <h2>work</h2>
+    <h2>works</h2>
     {work.length === 0 ? (
       <p class="entry-empty">
         Quietly rebuilding this shelf. New pieces soon — until then, you can peek at what I'm thinking about in <a href="/words">words</a>.
@@ -21,9 +21,9 @@ const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "num
     ) : (
       work.map((entry, i) => (
         <a
-          href={`/work/${entry.id}`}
+          href={`/works/${entry.id}`}
           class="entry-row"
-          data-vt-collection="work"
+          data-vt-collection="works"
           data-vt-slug={entry.id}
         >
           <Polaroid

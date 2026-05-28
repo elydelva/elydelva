@@ -110,10 +110,10 @@ const og = new URL(ogImage ?? "/og.png", Astro.site).href;
         // with the same view-transition-name in one document = uniqueness
         // violation → the browser skips the group entirely (= no morph).
         function isDetail(pathname) {
-          return /^\/(work|words)\/[^\/]+\/?$/.test(pathname || "");
+          return /^\/(works|words)\/[^\/]+\/?$/.test(pathname || "");
         }
         function isCollectionIndex(pathname) {
-          return /^\/(work|words)\/?$/.test(pathname || "");
+          return /^\/(works|words)\/?$/.test(pathname || "");
         }
         function isHome(pathname) {
           return /^\/?$/.test(pathname || "");
