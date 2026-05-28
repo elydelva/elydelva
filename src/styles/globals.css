@@ -651,6 +651,20 @@ a {
     position: static;
     margin-bottom: 1rem;
   }
+
+  .entry-row .entry-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+  }
+
+  .entry-row .label {
+    font-size: 0.9rem;
+  }
+
+  .entry-row .meta {
+    font-size: 0.8rem;
+  }
 }
 
 .back-button:hover {
@@ -952,9 +966,6 @@ a {
 }
 
 /* === View Transitions === */
-@view-transition {
-  navigation: auto;
-}
 
 /* Root cross-fade: the OLD root holds every non-morphing element (the other
  * polaroids, headings, bio…). We blur it out while fading so the rest of the
