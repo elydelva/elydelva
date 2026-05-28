@@ -1,0 +1,126 @@
+---
+title: "Minecraft, une banque, des bots, et un peu de blanchiment"
+description: "Pendant le confinement, je jouais sur Chocolia, le plus gros serveur PVP Faction de Minecraft. À deux, on a construit une banque automatique, un réseau de bots derrière des proxies achetés sur un vieux site russe, et un système d'obscurcissement inspiré de Tornado Cash. On est devenus, pour une saison, la faction la plus riche du serveur."
+date: 2026-05-28
+image: "/words/chocolia/cover.png"
+heroImage: "/words/chocolia/cover.png"
+stack: []
+order: 2
+---
+
+import Figure from "../../components/blocks/Figure.astro";
+import Squiggle from "../../components/blocks/Squiggle.astro";
+import PullQuote from "../../components/blocks/PullQuote.astro";
+import Citation from "../../components/blocks/Citation.astro";
+
+Pendant le confinement, je jouais sur Chocolia, le plus gros serveur PVP Faction de Minecraft. À deux, on a construit une banque automatique, un réseau de bots derrière des proxies achetés sur un vieux site russe, et un système d'obscurcissement inspiré de Tornado Cash. On est devenus, pour une saison, la faction la plus riche du serveur. Voilà comment.
+
+<Squiggle />
+
+## Minecraft, et la découverte des serveurs
+
+Minecraft a été mon premier vrai jeu vidéo. J'ai commencé sur téléphone, puis sur PC, et comme tout joueur Minecraft j'ai un jour découvert les **serveurs** : des versions modifiées du jeu, montées par des communautés entières, qui transformaient Minecraft en plateforme pour autre chose. Des mini-jeux, des modes complets, des univers de règles inventés par-dessus le jeu de base. Un monde derrière le monde, et il s'ouvrait gratuitement.
+
+Le mode qui m'a happé immédiatement, c'était le **PVP Faction**.
+
+<Squiggle />
+
+## PVP Faction, ou une économie qui ressemble à la vraie vie
+
+Dans un serveur PVP Faction, on se regroupe à plusieurs en clans qu'on appelle des **factions**. On construit une base ensemble, on la défend, on attaque celle des autres. Et surtout, on participe à une économie complète, qui ressemble beaucoup à la vraie. Plusieurs façons de gagner de l'argent coexistent : récolter et vendre des ressources, combattre, ou louer son temps à une autre faction qui paie un salaire pour qu'on travaille dans sa ferme. Les transactions passent par des shops automatiques posés librement par les joueurs, ou par un hôtel des ventes où chacun fixe ses prix.
+
+Ce qui m'a frappé tout de suite, c'est à quel point cette économie ressemble à la nôtre. Avec assez d'argent, on peut tout acheter : du matériel, de la sécurité, du travail, du temps. Qui a l'argent a le pouvoir. C'est exactement la règle du monde réel, juste sans les nuances.
+
+Le serveur sur lequel on jouait, c'était **Chocolia**, le numéro un PVP Faction France à l'époque. Les enjeux y étaient sérieux : des milliers de joueurs connectés en même temps, des partenariats avec des YouTubeurs, des cadeaux réels pour les meilleurs en fin de saison. Quand on arrive à treize ans dans ce genre d'endroit, on n'a qu'une envie : faire partie de ceux qui ont l'argent.
+
+<Squiggle />
+
+## La banque d'investissement, et le premier hack du système
+
+On a vite cherché à comprendre comment scaler. La voie classique, c'était la ferme : se construire une base, sécuriser, attaquer les autres, récolter, vendre. C'est long, et on n'était que deux.
+
+Heureusement, le serveur proposait une autre voie : une **banque d'investissement**. Le fonctionnement était simple. On allait dans une salle précise de la carte, on déposait une somme d'argent du jeu, on choisissait une durée, et on restait là, sans bouger. Au bout du temps choisi, on récupérait le double. Six heures de présence pour faire passer 600 000 à 1 200 000. Une heure pour faire passer 200 000 à 250 000. De l'argent qui tombait tant qu'on était connecté à un endroit précis.
+
+Pourquoi le serveur acceptait un mécanisme pareil ? La réponse est dans l'écosystème des serveurs Minecraft. Sur les sites d'agrégation qui classent les serveurs, le critère principal, c'est le nombre de joueurs connectés en simultané. Plus on est nombreux à rester en ligne, plus on monte dans les classements, plus on attire de nouveaux joueurs. La banque d'investissement, c'était littéralement un mécanisme pour garder les gens connectés à ne rien faire. Un échange : le serveur paie en monnaie de jeu, et reçoit en visibilité.
+
+Pour nous, c'était la rampe d'accès. On a commencé à deux, chacun avec un compte en permanence dans la salle d'investissement. Ça tournait pendant qu'on dormait, qu'on mangeait, qu'on suivait à moitié des visios. Très vite, on a voulu pousser plus loin. Le problème, c'est qu'on ne pouvait pas simplement multiplier les comptes. Le serveur limitait les connexions à **trois par adresse IP**.
+
+<Squiggle />
+
+## Faire tourner des Minecraft sans Minecraft
+
+Multiplier les comptes voulait dire multiplier les instances du jeu, et nos vieux PC assemblés à la main ne suivaient pas. Il fallait autre chose. C'est là qu'on a basculé sur l'idée de **bots** : ne pas faire tourner Minecraft, mais simuler un client Minecraft.
+
+À l'époque, je touchais déjà au JavaScript via mes bots Discord. J'ai trouvé un SDK Node.js open source qui faisait exactement ce qu'il me fallait : se connecter à un serveur Minecraft en se faisant passer pour un client normal, et lui envoyer des actions. Pas de fenêtre de jeu, pas de carte graphique, juste du code.
+
+Premier problème, dès la connexion : le bot se faisait éjecter au bout de quelques minutes. Le serveur avait un système anti-AFK qui détectait les comptes qui ne bougeaient jamais. Sauf que pour la banque d'investissement, il fallait précisément ne pas bouger. Le défi devenait : convaincre le serveur qu'on était vivants, sans quitter la salle.
+
+Pour ça, il fallait descendre au niveau du protocole. Minecraft communique avec son serveur par **paquets**, des petits messages structurés qui disent des choses comme *je tourne la tête de trois degrés vers la droite* ou *je me déplace d'un demi-bloc vers le nord*. J'ai lu la documentation officielle du protocole, j'ai compris la structure des paquets, et j'ai fait envoyer à mes bots des micro-mouvements toutes les quelques secondes. Un tour de tête ici, un quart de saut là. Une semaine de travail pour que le bot ait l'air vivant.
+
+Deuxième problème, plus dur : interagir avec l'interface. Pour démarrer un investissement, il fallait s'approcher d'un PNJ, ouvrir son menu, choisir l'investissement (une heure ou six heures), choisir le montant, valider. Le SDK que j'utilisais ne documentait pas du tout cette couche. Pour la trouver, il fallait lire son code source. Or ce code était dans un style et à un niveau largement au-dessus de ce que je savais lire, et à l'époque, il n'y avait pas d'IA à qui demander *peux-tu m'expliquer ce que fait ce fichier en une phrase*. J'ai testé, recoupé avec la doc Minecraft, rétro-ingénieré ce que le SDK faisait par en dessous. Et comme la couche d'interaction n'était pas vraiment exposée, j'ai dû écrire une **extension** par-dessus le SDK pour ajouter ce qui manquait.
+
+Ça m'a pris beaucoup plus longtemps que tout le reste. Mais à la fin, on avait des bots qui se connectaient, marchaient jusqu'à la salle d'investissement, cliquaient sur le bon menu, choisissaient le bon investissement, et y restaient pendant six heures. Des Minecraft sans Minecraft.
+
+<Squiggle />
+
+## Trois comptes par IP, et un site russe en roubles
+
+On avait nos bots. Mais la limite des trois connexions par IP, elle, ne bougeait pas. Sans elle, on aurait pu démarrer un nombre arbitraire d'instances. Avec elle, on plafonnait à trois.
+
+J'avais exploré le sujet des **VPN** par curiosité quelques mois plus tôt, et j'en avais retiré une notion adjacente : le **proxy**. La différence, en gros : un VPN chiffre et redirige tout le trafic d'une machine, un proxy fait plus simple, il relaie une connexion au niveau applicatif. Dans les deux cas, l'idée est la même. Le serveur final ne voit pas ton adresse, il voit celle de l'intermédiaire. C'est comme demander à un ami de poster une lettre à ta place : sur l'enveloppe, c'est l'adresse de l'ami qui apparaît.
+
+Premier obstacle : Chocolia tenait une liste de proxies connus et rejetait les connexions qui en venaient. Les fournisseurs grand public, ceux qu'on trouve avec une recherche Google, étaient grillés depuis longtemps. Il fallait dénicher des sources assez obscures pour passer entre les mailles.
+
+C'est comme ça que je me suis retrouvé un soir sur un vieux site russe, à payer des proxies en **roubles**, parce que c'était la seule devise acceptée. Au passage, j'ai appris à quatorze ans qu'il existait d'autres monnaies que l'euro, et que le change pouvait te faire payer dix centimes ce que tu croyais payer un euro. J'ai pris ça comme une bonne nouvelle.
+
+J'ai retouché mon code de bot pour qu'il fasse passer toutes ses connexions par le proxy choisi. Pour y arriver, j'ai dû redescendre plus bas que d'habitude, jusqu'aux **sockets**, ces points d'entrée bruts du réseau sur lesquels tout le reste est construit. Une fois la chose en place, j'ai testé. Un bot. Connexion. Vu par le serveur depuis une IP différente. Ça marchait.
+
+Pour dix centimes par proxy, j'avais trois comptes supplémentaires.
+
+<Squiggle />
+
+## Vingt bots, une banque centrale, et un réseau autonome
+
+On est rapidement passés à une vingtaine de bots, chacun derrière son proxy, chacun dans sa salle d'investissement. La question est devenue : comment les coordonner ?
+
+L'investissement à la banque suit un cycle simple : déposer une somme, attendre, récupérer le double. Mais à plein régime, on a vite remarqué que les rendements s'aplatissaient. Au début, on faisait pratiquement fois deux par jour sur ce qu'on possédait. Très vite, on est redescendus à dix pour cent du total par jour. Plus on devient riche, moins ça rapporte en proportion. Pour continuer à scaler, il fallait choisir intelligemment quoi investir, où, quand, et en combien de tranches.
+
+J'ai fait évoluer notre système en architecture client-serveur, au sens propre. Au centre, un **bot banque** : il détenait l'intégralité du trésor, et c'est lui qui prenait les décisions. Autour, des bots ouvriers, chacun dans sa salle d'investissement. Le protocole entre eux était simple. Un bot ouvrier demandait des fonds à la banque, la banque lui virait un montant calculé selon ce qui était le plus rentable à cet instant, l'ouvrier allait investir, et à la fin du cycle, il renvoyait tout, capital et gains, à la banque. La banque relançait immédiatement un autre ouvrier. La pile tournait sans nous.
+
+En une semaine de fonctionnement à pleine charge, on est devenus la faction la plus riche de Chocolia. Et de très loin.
+
+<Squiggle />
+
+## Quand on devient trop riche : se cacher
+
+Devenir la faction la plus riche du serveur sonne comme une victoire. C'était en réalité un nouveau problème.
+
+Le serveur publiait un classement public des factions par richesse totale. Les administrateurs avaient leurs propres outils internes pour observer les flux d'argent et repérer ce qui sortait du normal. Ce qu'on faisait n'était pas illégal au sens des règles écrites : on utilisait des mécaniques exposées par le serveur lui-même, la banque d'investissement, le farming, l'hôtel des ventes. Le reste, les bots et les proxies, était plus discutable. On ne voulait pas attirer l'attention.
+
+J'ai cherché comment d'autres systèmes, ailleurs, géraient le problème de *trop d'argent visible au même endroit*. Je suivais à l'époque des YouTubeurs qui vulgarisaient les cryptomonnaies, et j'étais tombé sur **Tornado Cash**, un *mixer* crypto. C'est un point d'entrée commode pour comprendre une mécanique bien plus vieille.
+
+Tornado Cash, en gros, c'est ça : beaucoup de gens versent leurs fonds dans une même piscine commune, et la piscine paie ensuite vers d'autres adresses, sans qu'on puisse relier qui a versé à qui a reçu. La traçabilité est cassée par le mélange. Mais ce principe ne vient pas de la crypto. C'est exactement la logique que de grandes entreprises appliquent à leurs flux financiers réels, via des filiales dans des juridictions opaques, des sociétés-écrans, des prêts intra-groupes qui font passer de l'argent d'une entité à l'autre jusqu'à ce qu'il soit impossible de retrouver l'origine. Le but n'est pas toujours l'illégalité pure, mais souvent l'optimisation fiscale agressive : rendre assez complexe la structure pour qu'aucun fisc national ne puisse prouver où le profit a été réellement généré. Ce que Tornado Cash fait en quelques lignes de contrat Solidity, des directions fiscales le font en organigrammes à soixante entités.
+
+On a construit l'équivalent, très rudimentaire, à l'échelle de notre faction, en monnaie de jeu. Plutôt que de garder une grosse trésorerie dans un coffre central, le bot banque achetait en continu, via l'hôtel des ventes, des ressources de toutes sortes, qu'il répartissait dans des dizaines de petits coffres dispersés sur la carte, chacun appartenant à un bot différent et apparemment sans lien avec les autres. Quand on avait besoin de liquidité quelque part, un bot complètement déconnecté du circuit allait vendre une partie de son stock, encaissait l'argent, et le transférait là où on en avait besoin. On perdait en moyenne cinq pour cent à chaque cycle, à cause des frais et des écarts de prix sur l'hôtel des ventes. C'était notre coût d'invisibilité. Dérisoire à côté de ce que les rendements rapportaient.
+
+Pour utiliser cette machinerie sans y penser, on a mis une interface devant : un bot Discord qui exposait des commandes simples à n'importe quel membre de la faction. *Vire cinquante mille à tel joueur, prélève vingt mille pour acheter du stuff.* Le bot traduisait ça en mouvements internes, vérifiait les permissions et les plafonds qu'on avait définis pour chaque membre, puis exécutait. Une plateforme de virement bancaire en Discord, pour notre faction, posée par-dessus un trésor décentralisé qu'aucun outil d'administration ne pouvait voir d'un coup d'œil.
+
+<Squiggle />
+
+## Ce que j'en ai retenu
+
+On a tenu le rang de faction la plus riche de Chocolia pendant une saison entière. L'aventure s'est arrêtée d'elle-même : deux saisons plus tard, le serveur s'est vidé. Le confinement venait de prendre fin, les gens retournaient au travail et à l'école, et un serveur PVP Faction, c'est un écosystème, ça meurt vite quand les joueurs partent. On a arrêté un peu de force.
+
+Techniquement, j'en ai appris beaucoup. Les **proxies** pour de vrai, pas en théorie. Les **SDK** comme objets qu'on lit et qu'on étend, pas seulement qu'on utilise. La rétro-ingénierie, le fait d'avancer dans un code qu'on ne comprend pas en formulant des hypothèses et en les testant. Le bas niveau du réseau aussi, les paquets, les sockets, ce que le système expose quand on descend assez loin.
+
+Mais le plus durable, c'est ce que j'ai compris des systèmes en général.
+
+Le serveur récompensait la présence en ligne via la banque d'investissement, parce que les sites d'agrégation lui apportaient des joueurs en échange. C'est précisément cette récompense qui rendait notre exploit viable. La règle n'est pas neuve, on la retrouve partout, du référencement Google aux algorithmes de recommandation. Voir un système et chercher l'incitation cachée derrière, c'est une façon d'apprendre à le lire.
+
+Sur le moment, ce qui nous faisait avancer, c'était bien plus simple : on voulait être les plus riches, on pouvait tout acheter dans le jeu, et le pouvoir d'achat virtuel, pour des gamins de treize-quatorze ans confinés à la maison, c'était un moteur extraordinaire. Avec le recul, le vrai gain, c'est ce qu'on a appris en chemin.
+
+Une dernière chose, et c'est la même que pour l'autre aventure de cette époque. À l'époque, il n'y avait pas d'IA pour penser à ma place. Lire un SDK open source au-dessus de mon niveau, c'était une affaire de semaines. Aujourd'hui, je demanderais à un assistant de me l'expliquer en un paragraphe, et je gagnerais ces semaines-là. Le réflexe, lui, n'a pas bougé. Voir un système, et descendre dessous.
+
+<Squiggle />
+
+*[Mineflayer — client Minecraft programmable en Node.js](https://github.com/PrismarineJS/mineflayer) · [Minecraft Protocol — wiki.vg](https://wiki.vg/Protocol) · [Tornado Cash — Wikipedia](https://en.wikipedia.org/wiki/Tornado_Cash) · [Proxy server — Wikipedia](https://en.wikipedia.org/wiki/Proxy_server)*
