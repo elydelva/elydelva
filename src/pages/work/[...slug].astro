@@ -15,6 +15,73 @@ const heroSrc =
   entry.data.image.replace("w=240&h=160", "w=1000&h=600").replace("q=80", "q=72");
 ---
 
+
+<script>
+  function initMermaidZoom() {
+    const svgs = document.querySelectorAll<SVGElement>(".entry-body svg.flowchart");
+    if (!svgs.length) return;
+
+    let overlay = document.querySelector<HTMLDivElement>(".mermaid-overlay");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.className = "mermaid-overlay";
+      document.body.appendChild(overlay);
+    }
+
+    const close = () => {
+      overlay!.classList.remove("open");
+      document.removeEventListener("keydown", onKey);
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) close();
+    });
+
+    svgs.forEach((svg) => {
+      // Skip if already wrapped
+      if (svg.parentElement?.classList.contains("mermaid-wrap")) return;
+
+      // Wrap SVG
+      const wrap = document.createElement("div");
+      wrap.className = "mermaid-wrap";
+      svg.parentElement!.insertBefore(wrap, svg);
+      wrap.appendChild(svg);
+
+      // Veil + expand button
+      const veil = document.createElement("div");
+      veil.className = "mermaid-veil";
+
+      const btn = document.createElement("button");
+      btn.className = "mermaid-expand-btn";
+      btn.setAttribute("aria-label", "Expand diagram");
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+      </svg>`;
+
+      veil.appendChild(btn);
+      wrap.appendChild(veil);
+
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const clone = svg.cloneNode(true) as SVGElement;
+        clone.style.maxWidth = "";
+        clone.setAttribute("width", "100%");
+        overlay!.innerHTML = "";
+        overlay!.appendChild(clone);
+        overlay!.classList.add("open");
+        document.addEventListener("keydown", onKey);
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initMermaidZoom);
+  initMermaidZoom();
+</script>
+
 <BaseLayout
   title={`${entry.data.title} — Ely Delva`}
   description={entry.data.description}

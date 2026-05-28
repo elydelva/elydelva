@@ -1,9 +1,9 @@
 ---
-title: "One CLI : pourquoi j'ai arrêté les MCP servers et écrit un binaire à la place"
-description: "J'ai passé plusieurs mois à utiliser des MCP servers pour donner à mes agents IA accès à GitHub, Notion, Linear. Chaque opération me coûtait 20 à 32 fois plus de tokens que nécessaire. J'ai fini par construire autre chose."
+title: "OneCLI : pourquoi j'ai abandonné les MCP pour un CLI"
+description: "J'ai passé plusieurs mois à utiliser des MCP pour donner à mes agents IA accès à GitHub, Notion, Linear. Chaque opération me coûtait 20 à 32 fois plus de tokens que nécessaire. Alors par curiosité j'ai fini par construire autre chose."
 date: 2026-02-01
-image: "/work/one/mcp.png"
-heroImage: "/work/one/mcp.png"
+image: "/work/one/cover.png"
+heroImage: "/work/one/cover.png"
 stack: []
 order: 1
 ---
@@ -13,19 +13,19 @@ import Squiggle from "../../components/blocks/Squiggle.astro";
 import PullQuote from "../../components/blocks/PullQuote.astro";
 import Citation from "../../components/blocks/Citation.astro";
 
-J'ai passé plusieurs mois à utiliser des MCP servers pour donner à mes agents IA accès à GitHub, Notion, Linear. Ça fonctionnait. Mais chaque opération me coûtait 20 à 32 fois plus de tokens que nécessaire, et les agents échouaient sur une tâche complexe sur quatre. J'ai fini par construire autre chose.
+J'ai passé plusieurs mois à utiliser des MCP pour donner à mes agents IA accès à GitHub, Notion, Linear. Ça fonctionnait. Mais chaque opération me coûtait 20 à 32 fois plus de tokens que nécessaire, et les agents échouaient sur une tâche complexe sur quatre. Alors par curiosité j'ai fini par construire autre chose.
 
 <Squiggle />
 
 ## De ChatGPT passif aux agents qui commitent tout seuls : deux ans en accéléré
 
-Novembre 2022. ChatGPT sort. C'est impressionnant, mais dans la pratique c'est un chat : tu lui demandes d'écrire du code, il écrit du code. Il conseille. Il ne fait rien dans le monde réel.
+Novembre 2022. ChatGPT sort. C'est impressionnant, mais dans la pratique c'est un chat : on lui demande d'écrire du code, il écrit du code. Il conseille. Il ne fait rien dans le monde réel.
 
-2023 : OpenAI sort les **function calls** pour GPT-4. Anthropic suit avec les **tools** dans Claude. Le modèle peut désormais décider d'appeler une fonction, attendre le résultat, et continuer. Premiers agents rudimentaires — des boucles qui appellent des outils, récupèrent des données, font des actions. Mais chaque développeur réimplémente tout : l'auth, les appels API, la gestion des erreurs. C'est fragile et non-auditable.
+2023 : OpenAI sort les **function calls** pour GPT-4. Anthropic suit avec les **tools** dans Claude. Le modèle peut désormais décider d'appeler une fonction, attendre le résultat, et continuer. Premiers agents rudimentaires des boucles qui appellent des outils, récupèrent des données, font des actions. Mais chaque développeur réimplémente tout : l'auth, les appels API, la gestion des erreurs. C'est fragile et non-auditable.
 
-Puis les agents deviennent sérieusement autonomes. **OpenHands** (d'abord OpenDevin, né en 2024) montre qu'un agent peut écrire du code, exécuter des commandes shell, naviguer sur le web et gérer un projet entier. Sur SWE-Bench — un benchmark mesurant la capacité d'un agent à résoudre de vrais bugs sur de vrais repos — OpenHands atteint 72% de résolution avec Claude Sonnet. Des développeurs juniors humains plafonnent autour de 15%.
+Puis les agents deviennent sérieusement autonomes. **OpenHands** (d'abord OpenDevin, né en 2024) montre qu'un agent peut écrire du code, exécuter des commandes shell, naviguer sur le web et gérer un projet entier. Sur SWE-Bench un benchmark mesurant la capacité d'un agent à résoudre de vrais bugs sur de vrais repos OpenHands atteint 72% de résolution avec Claude Sonnet. Des développeurs juniors humains plafonnent autour de 15%.
 
-Fin 2025, Peter Steinberger (développeur autrichien) sort **OpenClaw** (d'abord Clawdbot, puis Moltbot après une histoire de trademark). Principe : un assistant IA personnel, autonome, accessible depuis WhatsApp, Telegram ou Slack, capable de contrôler ton ordinateur en ton absence. L'agent prend des initiatives, exécute des tâches pendant la nuit, interagit avec les CLIs installés sur ta machine.
+Fin 2025, Peter Steinberger (développeur autrichien) sort **OpenClaw** (d'abord Clawdbot, puis Moltbot après une histoire de trademark). Principe : un assistant IA personnel, autonome, accessible depuis WhatsApp, Telegram ou Slack, capable de contrôler l'ordinateur de l'utilisateur en son absence. L'agent prend des initiatives, exécute des tâches pendant la nuit, interagit avec les CLIs installés sur la machine.
 
 En deux ans, on est passé d'un assistant qui suggère du code à des agents qui commitent, déploient, envoient des mails. L'outillage n'a pas suivi au même rythme.
 
@@ -33,23 +33,23 @@ En deux ans, on est passé d'un assistant qui suggère du code à des agents qui
 
 ## Novembre 2024 : la hype des MCP
 
-Novembre 2024 : Anthropic annonce le **Model Context Protocol**. Un protocole standardisé pour connecter un agent à des services tiers — plutôt que chaque développeur réimplémente ses appels à GitHub ou Notion, un MCP server expose les capacités d'un service de façon uniforme.
+Novembre 2024 : Anthropic annonce le **Model Context Protocol**. Un protocole standardisé pour connecter un agent à des services tiers plutôt que chaque développeur réimplémente ses appels à GitHub ou Notion, un MCP server expose les capacités d'un service de façon uniforme.
 
-Anthropic ship directement des **serveurs de référence** pour lancer l'écosystème : `filesystem` (lire et écrire des fichiers locaux), `git` (opérations sur un repo), `github` (issues, PRs, releases), `fetch` (récupérer une page web), `brave-search` (recherche web). En quelques semaines, la communauté explose. Des centaines de serveurs apparaissent — Postgres, MongoDB, Slack, Figma, AWS, Cloudflare. Un MCP pour Spotify. Un pour chaque service que tu connais et la moitié de ceux que tu connais pas.
+Anthropic ship directement des **serveurs de référence** pour lancer l'écosystème : `filesystem` (lire et écrire des fichiers locaux), `git` (opérations sur un repo), `github` (issues, PRs, releases), `fetch` (récupérer une page web), `brave-search` (recherche web). En quelques semaines, la communauté explose. Des centaines de serveurs apparaissent Postgres, MongoDB, Slack, Figma, AWS, Cloudflare. Un MCP pour Spotify. Un pour chaque service qu'on connaît et la moitié de ceux qu'on connaît pas.
 
 Je configure quelques serveurs. Deux problèmes remontent immédiatement.
 
 > **Problème 1 : chaque service, c'est un outil de plus à gérer.**
-> Chaque MCP server est un paquet séparé à installer, configurer (et si celui-ci existe). Les credentials sont gérés à sa façon — parfois une variable d'env, parfois un fichier de config quelconque.
+> Chaque MCP server est un paquet séparé à installer, configurer (et si celui-ci existe). Les credentials sont gérés à sa façon parfois une variable d'env, parfois un fichier de config quelconque.
 
-> **Problème 2 : la sécurité devient une intention sans implémentation.**
-> Avec MCP, définir finement ce qu'un agent *peut* faire — lire les issues de ce repo mais pas toucher aux branches protégées, accéder à Notion en lecture mais pas en écriture — est difficile, voire impossible sans un effort disproportionné. La granularité par projet n'existe pas. Résultat : la plupart renoncent (et moi le premier).
+> **Problème 2 : la sécurité repose sur un human in the loop.**
+> À chaque interaction avec un service externe, une confirmation manuelle : autoriser une fois, ou toujours. C'est imprévisible en amont, et bloquant en pratique l'agent s'arrête et attend. Si on n'est pas là, il reste en stand-by.
 
 <Squiggle />
 
 ## Le tournant : les CLI s'imposent
 
-Pendant ce temps, j'utilise `gh` — le GitHub CLI officiel — dans mes workflows depuis un moment. À chaque fois que je le configure pour un agent, je remarque que **ça fonctionne vraiment bien**. L'agent comprend ce qu'il peut faire, il appelle `gh issue create` ou `gh pr merge`, et c'est propre. Pas de serveur, pas de démon en background. Un binaire, une commande, une sortie JSON.
+Pendant ce temps, j'utilise `gh` le GitHub CLI officiel dans mes workflows depuis un moment. À chaque fois que je le configure pour un agent, je remarque que **ça fonctionne vraiment bien**. L'agent comprend ce qu'il peut faire, il appelle `gh issue create` ou `gh pr merge`, et c'est propre. Pas de serveur, pas de démon en background. Un binaire, une commande, une sortie JSON.
 
 Quand il a un doute, il explore avec `--help` comme un humain le ferait. Il y a eu des CLI pour Notion et Linear sur le même principe.
 
@@ -59,10 +59,10 @@ Les chiffres sont sans appel. MindStudio a comparé en 2025 des tâches identiqu
 |---|---|---|---|
 | Lire le langage d'un repo | 1 365 | 44 026 | ×32 |
 | Lire les détails d'une PR | 1 648 | 32 279 | ×20 |
-| Taux de succès (25 runs) | **100%** | **72%** | — |
+| Taux de succès (25 runs) | **100%** | **72%** | |
 
 <Citation
-  quote="MCP servers consumed 35× more tokens than equivalent CLI tools on identical tasks. On complex workflows, reliability dropped from 100% to 72% — failures caused by TCP timeouts that simply don't exist with a local binary."
+  quote="MCP servers consumed 35× more tokens than equivalent CLI tools on identical tasks. On complex workflows, reliability dropped from 100% to 72% failures caused by TCP timeouts that simply don't exist with a local binary."
   author="MindStudio"
   source="MCP vs CLI benchmark, 2025"
   href="https://www.mindstudio.ai/blog/mcp-vs-cli-agentic-workflows-token-overhead-reliability"
@@ -76,15 +76,15 @@ Un binaire local, cross-platform, depuis le terminal. Pas de serveur, pas de dé
 
 ## Le vrai problème des CLI : les permissions, c'est le chaos
 
-Quand tu configures `gh` pour un agent, tu lui donnes un token. Ce token, soit il peut tout faire sur ton compte GitHub, soit tu passes dix minutes à configurer les scopes OAuth. Il n'y a pas d'entre-deux **par projet** — pas de fichier qui dit "sur *ce* repo, cet agent peut lire les issues et créer des PRs, mais pas toucher aux branches protégées".
+Quand on configure `gh` pour un agent, on lui donne un token. Ce token, soit il peut tout faire sur son compte GitHub, soit on passe dix minutes à configurer les scopes OAuth. Il n'y a pas d'entre-deux **par projet** pas de fichier qui dit "sur *ce* repo, cet agent peut lire les issues et créer des PRs, mais pas toucher aux branches protégées".
 
-Idem pour les autres CLI : chaque outil invente ses propres conventions de permissions. Certains lisent des variables d'environnement, d'autres un fichier de config global. Et dans tous les cas, ce fichier de config — l'agent peut y accéder. Il peut potentiellement se donner les droits lui-même, ou lire des credentials qu'il ne devrait pas voir.
+Idem pour les autres CLI : chaque outil invente ses propres conventions de permissions. Certains lisent des variables d'environnement, d'autres un fichier de config global. Et dans tous les cas, ce fichier de config l'agent peut y accéder. Il peut potentiellement se donner les droits lui-même, ou lire des credentials qu'il ne devrait pas voir.
 
 Il y a un autre problème, plus discret mais tout aussi irritant : **la documentation**. Quand un agent utilise `gh`, il n'a pas de vision structurée de ce que `gh` sait faire, dans quel ordre appeler les commandes, quels sont les raccourcis. L'agent choisit parfois le mauvais chemin, fait deux appels là où un seul suffisait, ou invente une syntaxe qui n'existe pas.
 
 Ce qu'il manquait : **un fichier de permissions versionné dans le repo, que l'agent ne peut pas modifier, qui déclare explicitement ce qu'il a le droit de faire sur ce projet**.
 
-Pas "tu peux faire tout ce que tu peux faire". Mais : `github: issues.read, pulls.create`. Rien d'autre. Et si l'agent essaie de faire autre chose, il reçoit un refus clair avec une explication actionnable.
+Pas "on peut faire tout ce qu'on peut faire". Mais : `github: issues.read, pulls.create`. Rien d'autre. Et si l'agent essaie de faire autre chose, il reçoit un refus clair avec une explication actionnable.
 
 <Squiggle />
 
@@ -96,11 +96,11 @@ Ce que j'ai construit : un **binaire local** qui :
 
 2. **Gère les credentials dans un vault local**, chiffré dans le trousseau OS natif (macOS, Linux, Windows). Jamais dans un service tiers. Multi-compte par design, parce que tout le monde a un compte perso et un compte pro.
 
-3. **Lit un fichier `.onerc.yaml` versionné dans le repo**, que l'agent peut lire mais jamais écrire. Ce fichier déclare exactement quels services et quelles actions sont autorisés sur ce projet. L'agent peut demander à élargir la portée — `one scope add github pulls.merge` — mais c'est le développeur qui valide.
+3. **Lit un fichier `.onerc.yaml` versionné dans le repo**, que l'agent peut lire mais jamais écrire. Ce fichier déclare exactement quels services et quelles actions sont autorisés sur ce projet. L'agent peut demander à élargir la portée `one scope add github pulls.merge` mais c'est le développeur qui valide.
 
 4. **Gère les setups qui ne peuvent pas être automatisés.** Quand une action nécessite une manipulation humaine ("partager cette page Notion avec l'intégration"), le CLI ne bricole pas : il sort un guide d'installation interactif qui explique exactement quoi faire.
 
-5. **Embarque de la documentation pensée pour les agents.** Chaque service du catalogue vient avec un `skill.md` — un fichier Markdown compact qui explique les concepts du service, la hiérarchie des actions, les bons chemins à emprunter. Quand l'agent appelle `one info github`, il reçoit directement ce contexte dans sa fenêtre. Il sait que `pulls.merge` existe, que `issues.labels.add` et `issues.labels.replace` ne font pas la même chose, que `search.code` est plus rapide que lire les fichiers un par un. Ce n'est pas une documentation générique — c'est une documentation écrite pour ne pas perdre de tokens à tâtonner.
+5. **Embarque de la documentation pensée pour les agents.** Chaque service du catalogue vient avec un `skill.md` un fichier Markdown compact qui explique les concepts du service, la hiérarchie des actions, les bons chemins à emprunter. Quand l'agent appelle `one info github`, il reçoit directement ce contexte dans sa fenêtre. Il sait que `pulls.merge` existe, que `issues.labels.add` et `issues.labels.replace` ne font pas la même chose, que `search.code` est plus rapide que lire les fichiers un par un. Ce n'est pas une documentation générique c'est une documentation écrite pour ne pas perdre de tokens à tâtonner.
 
 6. **Trace tout** dans un audit log local. `one trace` montre ce que l'agent a fait, quand, avec quel résultat.
 
@@ -121,17 +121,17 @@ one github issues.create \
 
 ### Go
 
-J'ai choisi **Go** — avant ce projet, je faisais surtout du TypeScript. Go s'est révélé être un bon choix :
+J'ai choisi **Go** avant ce projet, je faisais surtout du TypeScript. Go s'est révélé être un bon choix :
 
 - cross-compilation triviale
 - binaire statique
 - cold start sous 30ms
 
-La verbosité de la gestion d'erreurs, que j'avais crainte, s'est révélée être un avantage : chaque erreur est une valeur que tu traites ou transmets explicitement. Pas de `catch (e)` qui avale les problèmes. Quand tu exposes un outil à des agents autonomes, cette rigueur compte.
+La verbosité de la gestion d'erreurs, que j'avais crainte, s'est révélée être un avantage : chaque erreur est une valeur qu'on traite ou transmet explicitement. Pas de `catch (e)` qui avale les problèmes. Quand on expose un outil à des agents autonomes, cette rigueur compte.
 
 ### Le catalogue déclaratif
 
-Le catalogue de services est entièrement **déclaratif** : chaque service est décrit dans des fichiers YAML. Pour GitHub, un `service.yaml` liste les actions disponibles, les URLs, les règles d'injection des credentials, les schémas d'input. L'agent n'a pas besoin de savoir comment l'API GitHub fonctionne — il appelle `one github issues.create` et le binaire se débrouille.
+Le catalogue de services est entièrement **déclaratif** : chaque service est décrit dans des fichiers YAML. Pour GitHub, un `service.yaml` liste les actions disponibles, les URLs, les règles d'injection des credentials, les schémas d'input. L'agent n'a pas besoin de savoir comment l'API GitHub fonctionne il appelle `one github issues.create` et le binaire se débrouille.
 
 ```yaml
 # extrait simplifié d'une action dans le catalogue
@@ -151,7 +151,7 @@ Ce modèle couvre l'essentiel des APIs REST. Mais certains services demandent pl
 
 ### WebAssembly : pourquoi
 
-WASM est né pour faire tourner du code C/C++/Rust dans un navigateur à vitesse quasi-native — Figma s'en sert pour son moteur de rendu. Ce qui compte ici, c'est ce qu'il apporte hors du navigateur : un sandbox strict, portable, avec un accès réseau et système entièrement contrôlé.
+WASM est né pour faire tourner du code C/C++/Rust dans un navigateur à vitesse quasi-native Figma s'en sert pour son moteur de rendu. Ce qui compte ici, c'est ce qu'il apporte hors du navigateur : un sandbox strict, portable, avec un accès réseau et système entièrement contrôlé.
 
 Dans notre cas, quand un service a besoin d'une logique qu'on ne peut pas exprimer en YAML déclaratif, on embarque un **handler WASM sandboxé** dans le catalogue. Ce handler s'exécute dans un environnement restreint :
 
@@ -162,22 +162,22 @@ Dans notre cas, quand un service a besoin d'une logique qu'on ne peut pas exprim
 
 Un développeur qui veut ajouter le support de l'API GraphQL de Linear écrit son handler en TypeScript ou Rust, le compile en WASM, et le soumet via une PR. La review porte sur le code source ; à l'exécution, le sandbox garantit qu'un handler malveillant ne cause pas de dégâts.
 
-C'est la leçon qu'OpenClaw a apprise à la dure. Début 2026, Cisco a disséqué un skill du registre communautaire appelé "What Would Elon Do?" — monté au top par du vote artificiel. C'était du malware : injection de prompt pour contourner les protections + exfiltration de données vers un serveur externe. OpenClaw n'avait pas de sandbox. WASM en a un par construction.
+C'est la leçon qu'OpenClaw a apprise à la dure. Début 2026, Cisco a disséqué un skill du registre communautaire appelé "What Would Elon Do?" monté au top par du vote artificiel. C'était du malware : injection de prompt pour contourner les protections + exfiltration de données vers un serveur externe. OpenClaw n'avait pas de sandbox. WASM en a un par construction.
 
 ### La sécurité du transport
 
-Le transport HTTP est durci par défaut : pas de requêtes vers des IP privées (RFC1918), cap sur les redirects, refus du HTTP non chiffré. Un agent compromis ne peut pas utiliser `one` pour rebondir sur ton réseau local. Ce n'est pas un détail — c'est un vecteur d'attaque classique sur les outils qui font confiance à l'input d'un agent.
+Le transport HTTP est durci par défaut : pas de requêtes vers des IP privées (RFC1918), cap sur les redirects, refus du HTTP non chiffré. Un agent compromis ne peut pas utiliser `one` pour rebondir sur son réseau local. Ce n'est pas un détail c'est un vecteur d'attaque classique sur les outils qui font confiance à l'input d'un agent.
 
 <Squiggle />
 
 ## Et maintenant ?
 
-Je l'utilise tous les jours. Quand je touche une limite, je l'adresse — un service manquant, un cas mal géré, une friction récurrente.
+Je l'utilise tous les jours. Quand je touche une limite, je l'adresse un service manquant, un cas mal géré, une friction récurrente.
 
 Est-ce que les MCP servers vont s'améliorer sur ces points ? Probablement. L'écosystème bouge vite. Mais en attendant, j'avais besoin de quelque chose qui fonctionne aujourd'hui, que je comprends complètement, et que je contrôle.
 
-Si tu travailles avec des agents et que tu te retrouves dans ces frictions, le projet est ouvert. Teste-le, casse-le, propose un service. La meilleure façon de savoir si une approche tient, c'est d'y confronter d'autres cas d'usage que le sien.
+Si on travaille avec des agents et qu'on se retrouve dans ces frictions, le projet est ouvert. À tester, à casser, je serais ravis de discuter d'amélioration. Parce que finalement, la meilleure façon de savoir si une approche tient, c'est d'y confronter d'autres cas d'usage que le sien ?
 
 <Squiggle />
 
-*[MindStudio — MCP vs CLI benchmark](https://www.mindstudio.ai/blog/mcp-vs-cli-agentic-workflows-token-overhead-reliability) · [arXiv — MCP Tool Descriptions overhead (fév. 2026)](https://arxiv.org/abs/2602.14878) · [Tyk — Enterprise comparison guide](https://tyk.io/learning-center/mcp-vs-cli-for-ai-agents-enterprise-comparison-guide/)*
+*[MindStudio MCP vs CLI benchmark](https://www.mindstudio.ai/blog/mcp-vs-cli-agentic-workflows-token-overhead-reliability) · [arXiv MCP Tool Descriptions overhead (fév. 2026)](https://arxiv.org/abs/2602.14878) · [Tyk Enterprise comparison guide](https://tyk.io/learning-center/mcp-vs-cli-for-ai-agents-enterprise-comparison-guide/)*

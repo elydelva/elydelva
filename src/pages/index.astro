@@ -27,7 +27,7 @@ const latest = work[0]?.data.date ?? new Date();
   </header>
 
   <p class="bio" style="--stagger: 1" data-motion>
-    I have been developing and building products that address various problems, some more useful than others, for the past 10 years. 
+    Depuis dix ans, je développe et je fabrique des produits destinés à résoudre divers problèmes, certains plus utiles que d'autres.
   </p>
 
   <section class="entry-list" style="--stagger: 2" data-motion>
@@ -44,8 +44,10 @@ const latest = work[0]?.data.date ?? new Date();
             alt={entry.data.title}
             index={i}
           />
-          <span class="label">{entry.data.title}</span>
-          <span class="meta">{fmt(entry.data.date)}</span>
+          <span class="entry-content">
+            <span class="label">{entry.data.title}</span>
+            <span class="meta">{fmt(entry.data.date)}</span>
+          </span>
         </a>
       ))
     }
@@ -58,8 +60,10 @@ const latest = work[0]?.data.date ?? new Date();
             alt="More work"
             index={workVisible.length}
           />
-          <span class="label">More</span>
-          <span class="meta chevron">›</span>
+          <span class="entry-content">
+            <span class="label">More</span>
+            <span class="meta chevron">›</span>
+          </span>
         </a>
       )
     }
@@ -79,8 +83,10 @@ const latest = work[0]?.data.date ?? new Date();
           data-vt-slug={entry.id}
         >
           <Polaroid image={entry.data.image} alt={entry.data.title} index={i + 10} />
-          <span class="label">{entry.data.title}</span>
-          <span class="meta">{fmt(entry.data.date)}</span>
+          <span class="entry-content">
+            <span class="label">{entry.data.title}</span>
+            <span class="meta">{fmt(entry.data.date)}</span>
+          </span>
         </a>
       ))
     }
@@ -93,8 +99,10 @@ const latest = work[0]?.data.date ?? new Date();
             alt="More words"
             index={wordsVisible.length + 10}
           />
-          <span class="label">More</span>
-          <span class="meta chevron">›</span>
+          <span class="entry-content">
+            <span class="label">More</span>
+            <span class="meta chevron">›</span>
+          </span>
         </a>
       )
     }
@@ -102,7 +110,7 @@ const latest = work[0]?.data.date ?? new Date();
 
   <section class="contact" style="--stagger: 4" data-motion>
     <h2>contact</h2>
-    <p class="contact-intro">Always up for a chat — projects, ideas, or just to say hi.</p>
+    <p class="contact-intro">Toujours partant pour discuter, de projets, d'idées, ou juste pour dire bonjour.</p>
     <ul class="contact-list">
       <li>
         <a href="mailto:ely.delva@outlook.com" aria-label="Email">

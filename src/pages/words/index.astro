@@ -29,8 +29,10 @@ const fmt = (d: Date) => d.toLocaleDateString("en", { month: "short", year: "num
           data-vt-slug={entry.id}
         >
           <Polaroid image={entry.data.image} alt={entry.data.title} index={i} />
-          <span class="label">{entry.data.title}</span>
-          <span class="meta">{fmt(entry.data.date)}</span>
+          <span class="entry-content">
+            <span class="label">{entry.data.title}</span>
+            <span class="meta">{fmt(entry.data.date)}</span>
+          </span>
         </a>
       ))
     )}
