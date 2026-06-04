@@ -17,7 +17,9 @@ const wordsVisible = words.slice(0, VISIBLE);
 const wordsHidden = words.slice(VISIBLE);
 
 const fmt = (d: Date) => d.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
-const latest = work[0]?.data.date ?? new Date();
+const latest =
+  [...work, ...words].sort((a, b) => b.data.date.getTime() - a.data.date.getTime())[0]?.data.date ??
+  new Date();
 ---
 
 <BaseLayout title="Ely Delva" description="Design et écriture par Ely Delva.">
