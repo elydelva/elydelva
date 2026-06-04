@@ -1034,17 +1034,6 @@ a {
   animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* More-section morph — when clicking "More" on home (→ /work or /words) or
- * coming back. The clicked .entry-list keeps its position and morphs to fit
- * the destination list; everything else (header, bio, other section, the
- * More row itself which is inside the snapshot) cross-fades via root. */
-::view-transition-group(more-section) {
-  animation-duration: 0.4s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
-}
-::view-transition-old(more-section),
-::view-transition-new(more-section) {
-  animation-duration: 0.4s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
+/* home ↔ collection index intentionally has NO container morph. Morphing the
+ * list box cross-faded two different polaroid stacks over a resizing box,
+ * which ghosted/smeared the images. A plain root cross-fade is clean. */
